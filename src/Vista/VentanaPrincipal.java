@@ -14,14 +14,20 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     ControladorVotos controlVotos;
     ControladorCandidatos controlCandidatos;
+    ControladorSesion controlSesion;
+    
 
     /**
      * Creates new form introVotos
      * @param controladorDeVotos
+     * @param controladorSesion
      */
-    public VentanaPrincipal(ControladorVotos controladorDeVotos) {
+    public VentanaPrincipal(ControladorVotos controladorDeVotos, ControladorSesion controladorSesion) {
+        this.controlSesion = controladorSesion;
         this.controlVotos = controladorDeVotos;
         this.controlCandidatos = new ControladorCandidatos(controladorDeVotos.getModelo(), 1);
+        
+        
         initComponents();
     }
 
@@ -52,8 +58,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         txtElim = new javax.swing.JTextField();
         btnEliminar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        btnSalir = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         comboCandidatos.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -75,6 +82,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jLabel2.setText("Para eliminar un candidato, introduzca su nombre: ");
 
+        txtElim.setEnabled(false);
+
         btnEliminar.setText("Eliminar Candidato");
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -83,6 +92,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
 
         jLabel3.setText("Para votar por un candidato, seleccionelo de la lista:");
+
+        btnSalir.setText("Cerrar Sesión");
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -111,8 +127,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                                 .addGap(21, 21, 21)
                                 .addComponent(comboCandidatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(61, 61, 61)
-                                .addComponent(btnVotar)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(btnVotar))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(150, 150, 150)
+                        .addComponent(btnSalir)))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,7 +154,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtElim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEliminar))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(btnSalir)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
@@ -154,28 +175,24 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         
         int nuevoID = comboCandidatos.getItemCount()+1;
         controlCandidatos.agregarCandidato(nuevoID,txtNombre.getText());
+        txtNombre.setText("");
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         //adminCan.eliminarCandidato(txtElim.getText());
     }//GEN-LAST:event_btnEliminarActionPerformed
 
-    
-    public static void main(String[] args) {
-           // TODO code application logic here
-        AdminVotos admin= AdminVotos.getInstance();
-        //admin.initCand();
-        ControladorVotos entrada=new ControladorVotos(admin, 0);
-        Barras b=new Barras(admin,0);
-        Pastel p=new Pastel(admin,0);
-        Numeros v=new Numeros(admin,0);
-        
-        entrada.actualizarVentana();
-    }
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        // TODO add your handling code here:
+        controlSesion.cerrarSesion();
+        this.dispose();
+        new InicioSesion().setVisible(true);  
+    }//GEN-LAST:event_btnSalirActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnVotar;
     private javax.swing.JComboBox comboCandidatos;
     private javax.swing.JLabel jLabel1;

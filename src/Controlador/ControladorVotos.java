@@ -17,8 +17,9 @@ import java.util.ArrayList;
  * @author Lalo
  */
 public class ControladorVotos extends ClaseControlador {
-
-    VentanaPrincipal ventanaPrincipal = new VentanaPrincipal(this);
+    
+    ControladorSesion controlSesion = new ControladorSesion(((AdminVotos) super.getModelo()), 0);
+    VentanaPrincipal ventanaPrincipal = new VentanaPrincipal(this, controlSesion);
 
     public ControladorVotos(ClaseModelo modelo, int idEvento) {
         super(modelo, idEvento);
@@ -37,4 +38,5 @@ public class ControladorVotos extends ClaseControlador {
         ventanaPrincipal.iniciarDatosEnVentana((ArrayList<Candidato>) modelo.getDatos());
         ventanaPrincipal.setVisible(true);
     }
+    
 }

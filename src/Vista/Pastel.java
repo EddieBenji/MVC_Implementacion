@@ -32,5 +32,4 @@ public class Pastel extends ClaseVista{
         graficaPastel.setVisible(true);
     }
 
- 
 }

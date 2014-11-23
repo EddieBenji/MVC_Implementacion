@@ -6,8 +6,10 @@
 package Modelo;
 
 import Fmat.Framework.Controlador.ControladorCache;
+import Fmat.Framework.Controlador.ControladorShiro;
 import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
+import java.awt.Window;
 import java.util.ArrayList;
 
 /**
@@ -19,14 +21,17 @@ public class AdminVotos extends ClaseModelo {
     private static AdminVotos adminVtos;
     private final ControladorCache cache;
     private static final int NUM_MAXIMO_ELEMENTOS_EN_CACHE = 1000;
+    private final ControladorShiro shiro;
 
-    private AdminVotos() {
+    public AdminVotos() {
         super.datos = new ArrayList();
         cache = new ControladorCache();
         cache.configLoad();
+        shiro = new ControladorShiro();
 
         inicializarCandidatos();
         inicializarEventos();
+        inicializarCuentas();
     }
 
     /**
@@ -61,7 +66,11 @@ public class AdminVotos extends ClaseModelo {
             eventos.add(new ClaseEvento(i));
         }
     }
-
+    
+    private void inicializarCuentas(){
+        shiro.agregarCuenta("eduardo", "edrt");
+    }
+    
     public void agregarVoto(int idCandidato) {
         Candidato unCandidato = (Candidato) cache.get(idCandidato);
         unCandidato.agregarVoto();
@@ -127,5 +136,19 @@ public class AdminVotos extends ClaseModelo {
         datos = obtenerCandidatos();
         return datos;
     }
-
+    
+    public boolean iniciarSesion(String usuario, String clave){
+        return shiro.logIn(usuario, clave);
+    }
+    
+    public void cerrarSesion(){
+        shiro.logOut();
+        for(Window window : java.awt.Window.getWindows()) {
+            window.dispose();
+        }
+    }
+    
+    public void agregarCuenta(String usuario, String clave){
+        shiro.agregarCuenta(usuario, clave);
+    }
 }

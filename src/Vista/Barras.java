@@ -36,4 +36,5 @@ public class Barras extends ClaseVista{
         graficaBarras.init(candidatos);
         graficaBarras.setVisible(true);      
     }
+
 }
