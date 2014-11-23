@@ -5,6 +5,7 @@
  */
 package Modelo;
 
+import Fmat.Framework.Controlador.ControladorCache;
 import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
 import java.util.ArrayList;
@@ -16,17 +17,16 @@ import java.util.ArrayList;
 public class AdminVotos extends ClaseModelo {
 
     private static AdminVotos adminVtos;
-    private ArrayList<Candidato> listaCandidatos;
+    private final ControladorCache cache;
+    private static final int NUM_MAXIMO_ELEMENTOS_EN_CACHE = 1000;
 
     private AdminVotos() {
+        super.datos = new ArrayList();
+        cache = new ControladorCache();
+        cache.configLoad();
 
-        this.listaCandidatos = new ArrayList();
         inicializarCandidatos();
         inicializarEventos();
-
-        //seteamos el arreglo de la clase Padre. (hereda del framework) 
-        super.datos = listaCandidatos;
-
     }
 
     /**
@@ -46,13 +46,14 @@ public class AdminVotos extends ClaseModelo {
      * Inicializa en memoria 3 candidatos por default.
      */
     private void inicializarCandidatos() {
+        Candidato A = new Candidato(1, "Pepe", 0);
+        cache.put(A.getId(), A);
 
-        listaCandidatos.add(new Candidato(1, "Pepe", 0));
+        Candidato B = new Candidato(2, "Esteban", 0);
+        cache.put(B.getId(), B);
 
-        listaCandidatos.add(new Candidato(2, "Esteban", 0));
-
-        listaCandidatos.add(new Candidato(3, "Jorge", 0));
-
+        Candidato C = new Candidato(3, "Jorge", 0);
+        cache.put(C.getId(), C);
     }
 
     private void inicializarEventos() {
@@ -61,13 +62,11 @@ public class AdminVotos extends ClaseModelo {
         }
     }
 
-    public void agregarVoto(int idObjeto) {
+    public void agregarVoto(int idCandidato) {
+        Candidato unCandidato = (Candidato) cache.get(idCandidato);
+        unCandidato.agregarVoto();
+        cache.put(idCandidato, unCandidato);
 
-        for (Candidato unCandidato : listaCandidatos) {
-            if (unCandidato.getIdCandidato() == idObjeto) {
-                unCandidato.agregarVoto();
-            }
-        }
         notificarObservadoresEvento(0);
     }
 
@@ -80,8 +79,7 @@ public class AdminVotos extends ClaseModelo {
     public void agregarCandidatos(int id, String nombre) {
         Candidato temp = new Candidato(id, nombre, 0);
 
-        listaCandidatos.add(temp);
-
+        cache.put(id, temp);
         notificarObservadoresEvento(0);
     }
 
@@ -100,9 +98,34 @@ public class AdminVotos extends ClaseModelo {
         notificarObservadoresEvento(0);
     }
 
+    private ArrayList<Candidato> obtenerCandidatos() {
+        //declaramos el ArrayList que contendrá la información de los candidatos:
+        ArrayList<Candidato> candidatos = new ArrayList<>();
+
+        //recorremos toda la caché:
+        for (int i = 1; i < NUM_MAXIMO_ELEMENTOS_EN_CACHE; i++) {
+
+            //obtenemos el candidato de la caché:
+            Candidato unCandidato = (Candidato) cache.get(i);
+
+            //si lo que devuelve la caché es nulo, entonces dejamos de recorrer
+            //toda la caché.
+            if (unCandidato == null) {
+                break;
+            }
+
+            candidatos.add(unCandidato);
+
+        }
+        /*Nótese que este ArrayList, fue llenado 
+         con la información de la caché.*/
+        return candidatos;
+    }
+
     @Override
     public Object getDatos() {
-        return super.datos;
+        datos = obtenerCandidatos();
+        return datos;
     }
 
 }

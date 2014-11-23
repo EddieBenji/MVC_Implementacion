@@ -5,11 +5,13 @@
  */
 package Modelo;
 
+import Fmat.Framework.Modelo.Cacheable;
+
 /**
  *
  * @author Lalo
  */
-public class Candidato {
+public class Candidato implements Cacheable{
 
     private int idCandidato;
     private String nombre;
@@ -86,6 +88,11 @@ public class Candidato {
                 + "Clave del Candidato: " + idCandidato + "\n"
                 + "Nombre: " + nombre + "\n"
                 + "Número de votos:" + numVotos;
+    }
+
+    @Override
+    public int getId() {
+        return idCandidato;
     }
 
 }
