@@ -24,8 +24,6 @@ public class ControladorSesion extends ClaseControlador {
     }
     public void cerrarSesion(){
         ((AdminVotos)super.getModelo()).cerrarSesion();
-        
-        
     }
     public void agregarCuenta(String usuario, String clave){
         ((AdminVotos)super.getModelo()).agregarCuenta(usuario, clave);

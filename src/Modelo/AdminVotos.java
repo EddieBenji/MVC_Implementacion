@@ -9,6 +9,10 @@ import Fmat.Framework.Controlador.ControladorCache;
 import Fmat.Framework.Controlador.ControladorShiro;
 import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
+import Vista.GraficaBarras;
+import Vista.GraficaPastel;
+import Vista.VentanaPrincipal;
+import Vista.VentanaTabla;
 import java.awt.Window;
 import java.util.ArrayList;
 
@@ -23,7 +27,7 @@ public class AdminVotos extends ClaseModelo {
     private static final int NUM_MAXIMO_ELEMENTOS_EN_CACHE = 1000;
     private final ControladorShiro shiro;
 
-    public AdminVotos() {
+    private AdminVotos() {
         super.datos = new ArrayList();
         cache = new ControladorCache();
         cache.configLoad();
@@ -66,11 +70,12 @@ public class AdminVotos extends ClaseModelo {
             eventos.add(new ClaseEvento(i));
         }
     }
-    
-    private void inicializarCuentas(){
-        shiro.agregarCuenta("eduardo", "edrt");
+
+    private void inicializarCuentas() {
+        shiro.agregarCuenta("ed", "1");
+        shiro.agregarCuenta("sel", "1");
     }
-    
+
     public void agregarVoto(int idCandidato) {
         Candidato unCandidato = (Candidato) cache.get(idCandidato);
         unCandidato.agregarVoto();
@@ -136,19 +141,31 @@ public class AdminVotos extends ClaseModelo {
         datos = obtenerCandidatos();
         return datos;
     }
-    
-    public boolean iniciarSesion(String usuario, String clave){
+
+    public boolean iniciarSesion(String usuario, String clave) {
+        inicializarCandidatos();
+        //inicializarEventos();
         return shiro.logIn(usuario, clave);
     }
-    
-    public void cerrarSesion(){
+
+    public void cerrarSesion() {
         shiro.logOut();
-        for(Window window : java.awt.Window.getWindows()) {
+        limpiarCache();
+        cerrarVentanas();
+    }
+
+    private void limpiarCache() {
+        cache.limpiarCache();
+    }
+
+    public void cerrarVentanas() {
+        for (Window window : java.awt.Window.getWindows()) {
+
             window.dispose();
         }
     }
-    
-    public void agregarCuenta(String usuario, String clave){
+
+    public void agregarCuenta(String usuario, String clave) {
         shiro.agregarCuenta(usuario, clave);
     }
 }

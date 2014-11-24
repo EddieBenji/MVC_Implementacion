@@ -4,11 +4,9 @@ package Vista;
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 import Modelo.Candidato;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
-
 
 /**
  *
@@ -32,9 +30,9 @@ public class VentanaTabla extends javax.swing.JFrame {
     }
 
     public void llenaTabla(ArrayList<Candidato> votos) {
-        
+
         Clear_Table();
-        
+
         //Declaramos las columnas:
         Object columnasDeDatos[] = new Object[2];
 

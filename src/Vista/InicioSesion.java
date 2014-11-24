@@ -9,9 +9,6 @@ package Vista;
 import Controlador.ControladorSesion;
 import Controlador.ControladorVotos;
 import Modelo.AdminVotos;
-import Modelo.Candidato;
-import java.awt.Window;
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 /**
@@ -152,6 +149,8 @@ public class InicioSesion extends javax.swing.JFrame {
        
         //Validar el inicio de sesión
         if(sesion.iniciarSesion(usuario, password)){
+            //admin.inicializarCandidatos();
+            //admin.inicializarEventos();
             
             Barras b=new Barras(admin,0);
             Pastel p=new Pastel(admin,0);
