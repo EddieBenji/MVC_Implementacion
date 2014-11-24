@@ -16,18 +16,20 @@ import javax.swing.JOptionPane;
  * @author Vanessa
  */
 public class InicioSesion extends javax.swing.JFrame {
-    AdminVotos admin = AdminVotos.getInstance();
-    ControladorVotos votos = new ControladorVotos(admin, 0);
-    ControladorSesion sesion = new ControladorSesion(admin,0) ;
+    
+    AdminVotos admin;
+    ControladorVotos votos;
+    ControladorSesion sesion;
     
     
     /**
      * Creates new form InicioSesion
      */
     public InicioSesion() {
-        
-        initComponents();
-        
+        admin = AdminVotos.getInstance();
+        votos = new ControladorVotos(admin, 0);
+        sesion = new ControladorSesion(admin,0) ;
+        initComponents();        
     }
 
     /**
@@ -152,11 +154,15 @@ public class InicioSesion extends javax.swing.JFrame {
             //admin.inicializarCandidatos();
             //admin.inicializarEventos();
             
+            //Barras2 b = new Barras2(admin, 0);
+            
             Barras b=new Barras(admin,0);
             Pastel p=new Pastel(admin,0);
             Numeros v= new Numeros(admin, 0);
+            
 
             votos.actualizarVentana();
+            this.dispose();
         }else{
             JOptionPane.showMessageDialog(null,"Error al iniciar sesión");
         }

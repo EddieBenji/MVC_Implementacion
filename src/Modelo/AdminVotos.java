@@ -9,10 +9,8 @@ import Fmat.Framework.Controlador.ControladorCache;
 import Fmat.Framework.Controlador.ControladorShiro;
 import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
-import Vista.GraficaBarras;
-import Vista.GraficaPastel;
-import Vista.VentanaPrincipal;
-import Vista.VentanaTabla;
+import Fmat.Framework.Modelo.InterfazObserver;
+import Vista.Barras2;
 import java.awt.Window;
 import java.util.ArrayList;
 
@@ -24,11 +22,14 @@ public class AdminVotos extends ClaseModelo {
 
     private static AdminVotos adminVtos;
     private final ControladorCache cache;
-    private static final int NUM_MAXIMO_ELEMENTOS_EN_CACHE = 1000;
+    private static final int MAX_ELEMENTOS_CACHE = 1000;
     private final ControladorShiro shiro;
 
+    public ArrayList observadores;
+    
     private AdminVotos() {
         super.datos = new ArrayList();
+        observadores = new ArrayList();
         cache = new ControladorCache();
         cache.configLoad();
         shiro = new ControladorShiro();
@@ -117,7 +118,7 @@ public class AdminVotos extends ClaseModelo {
         ArrayList<Candidato> candidatos = new ArrayList<>();
 
         //recorremos toda la caché:
-        for (int i = 1; i < NUM_MAXIMO_ELEMENTOS_EN_CACHE; i++) {
+        for (int i = 1; i < MAX_ELEMENTOS_CACHE; i++) {
 
             //obtenemos el candidato de la caché:
             Candidato unCandidato = (Candidato) cache.get(i);
@@ -144,14 +145,17 @@ public class AdminVotos extends ClaseModelo {
 
     public boolean iniciarSesion(String usuario, String clave) {
         inicializarCandidatos();
+        //getInstance();
         //inicializarEventos();
         return shiro.logIn(usuario, clave);
     }
 
     public void cerrarSesion() {
         shiro.logOut();
+        AdminVotos.adminVtos = null;
         limpiarCache();
         cerrarVentanas();
+        AdminVotos.getInstance();
     }
 
     private void limpiarCache() {
@@ -160,7 +164,7 @@ public class AdminVotos extends ClaseModelo {
 
     public void cerrarVentanas() {
         for (Window window : java.awt.Window.getWindows()) {
-
+           
             window.dispose();
         }
     }
@@ -168,4 +172,19 @@ public class AdminVotos extends ClaseModelo {
     public void agregarCuenta(String usuario, String clave) {
         shiro.agregarCuenta(usuario, clave);
     }
+    
+    
+    //Mis pruebas
+    
+     public void servicio() {
+        for (Object observadore : observadores) {
+            InterfazObserver observer = (InterfazObserver) observadore;
+            observer.actualizar(getDatos());
+        }
+    }
+     
+    public void agregar(InterfazObserver obs) {
+        observadores.add(obs);
+    }
+     
 }
