@@ -92,9 +92,9 @@ public class AdminVotos extends ClaseModelo {
      * @param nombre
      */
     public void agregarCandidatos(int id, String nombre) {
-        Candidato temp = new Candidato(id, nombre, 0);
+        Candidato nuevoCandidato = new Candidato(id, nombre, 0);
 
-        cache.put(id, temp);
+        cache.put(id, nuevoCandidato);
         notificarObservadoresEvento(0);
     }
 
