@@ -24,15 +24,17 @@ public class AdminVotos extends ClaseModelo {
     private final Shiro shiro;
 
     public ArrayList observadores;
-    
+
     private AdminVotos() {
         super.datos = new ArrayList();
         observadores = new ArrayList();
+        
         cache = new ControladorCache();
         cache.configLoad();
+        
         shiro = new Shiro();
 
-       // inicializarCandidatos();
+        inicializarCandidatos();
         inicializarEventos();
         inicializarCuentas();
     }
@@ -116,17 +118,15 @@ public class AdminVotos extends ClaseModelo {
         ArrayList<Candidato> candidatos = new ArrayList<>();
 
         //recorremos toda la caché:
-        for (int i = 1; i < MAX_ELEMENTOS_CACHE; i++) {
+        for (int i = 1; i <= MAX_ELEMENTOS_CACHE; i++) {
 
             //obtenemos el candidato de la caché:
             Candidato unCandidato = (Candidato) cache.get(i);
 
             //si lo que devuelve la caché es nulo, entonces dejamos de recorrer
             //toda la caché.
-            if (unCandidato == null) {
-                break;
-            }
-
+            if (unCandidato == null) break;
+            
             candidatos.add(unCandidato);
 
         }
@@ -142,31 +142,20 @@ public class AdminVotos extends ClaseModelo {
     }
 
     public boolean iniciarSesion(String usuario, String clave) {
-        inicializarCandidatos();
         return shiro.logIn(usuario, clave);
     }
 
     public void cerrarSesion() {
         shiro.logOut();
-        limpiarCache();
         cerrarVentanas();
     }
 
-    private void limpiarCache() {
-        cache.limpiarCache();
-    }
-
     public void cerrarVentanas() {
-        for (Window window : java.awt.Window.getWindows()) {
-           
+        for (Window window : java.awt.Window.getWindows()) 
             window.dispose();
-        }
     }
 
     public void agregarCuenta(String usuario, String clave) {
         shiro.agregarCuenta(usuario, clave);
     }
-
- 
-     
 }

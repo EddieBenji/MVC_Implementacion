@@ -34,32 +34,26 @@ public class Barras extends ClaseVista {
     
     public Barras(ClaseModelo modelo,int idEvento){
        super(modelo, idEvento);       
-       iniciarDatos(); 
+       initData(); 
     }
 
-    private static void iniciarDatos() {
+    private static void initData() {
         data = new DefaultCategoryDataset();
-        chart = ChartFactory.createBarChart(null,
-                null,
-                null,
-                data,
-                PlotOrientation.VERTICAL,
-                true,
-                true,
-                true);
+        chart = ChartFactory.createBarChart(null, null, null, data, PlotOrientation.VERTICAL, true, true, true);
         frame = new ChartFrame("Candidatos", chart);
+        //adminVotos.agregar((InterfazObserver) modelo);
     }
     
     public static Barras getInstance(ClaseModelo modelo,int idEvento) {
         if (barras2 == null) {
             barras2 = new Barras(modelo,idEvento);
         }
-        borrarDatos();
-        iniciarDatos();
+        eraseData();
+        initData();
         return barras2;
     }
 
-    private static void borrarDatos() {
+    private static void eraseData() {
         data = null;
         chart = null;
         frame = null;
