@@ -19,17 +19,17 @@ import org.jfree.data.general.DefaultPieDataset;
  *
  * @author Oscar
  */
-public class Pastel2 extends ClaseVista {
+public class Pastel extends ClaseVista {
     
     public AdminVotos adminVotos;
-    private static Pastel2 pastel2;
+    private static Pastel pastel2;
     private ArrayList<Candidato> candidatos;
     
     private static DefaultPieDataset data;
     private static JFreeChart chart;
     private static ChartFrame frame;  
     
-    public Pastel2(ClaseModelo modelo,int idEvento){
+    public Pastel(ClaseModelo modelo,int idEvento){
        super(modelo, idEvento);       
        initData(); 
     }
@@ -41,9 +41,9 @@ public class Pastel2 extends ClaseVista {
         //adminVotos.agregar((InterfazObserver) modelo);
     }
      
-    public static Pastel2 getInstance(ClaseModelo modelo,int idEvento) {
+    public static Pastel getInstance(ClaseModelo modelo,int idEvento) {
         if (pastel2 == null) {
-            pastel2 = new Pastel2(modelo,idEvento);
+            pastel2 = new Pastel(modelo,idEvento);
         }
         eraseData();
         initData();
