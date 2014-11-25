@@ -19,10 +19,11 @@ import java.util.ArrayList;
 public class ControladorVotos extends ClaseControlador {
     
     ControladorSesion controlSesion = new ControladorSesion(((AdminVotos) super.getModelo()), 0);
-    VentanaPrincipal ventanaPrincipal = new VentanaPrincipal(this, controlSesion);
+    VentanaPrincipal ventanaPrincipal;
 
     public ControladorVotos(ClaseModelo modelo, int idEvento) {
         super(modelo, idEvento);
+        ventanaPrincipal = VentanaPrincipal.getInstance(this, controlSesion);
     }
 
     public void realizarVotacion(int idCandidato) {

@@ -1,6 +1,7 @@
 package Vista;
 
 import Controlador.*;
+import Fmat.Framework.Modelo.ClaseModelo;
 import Modelo.AdminVotos;
 import Modelo.Candidato;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     ControladorVotos controlVotos;
     ControladorCandidatos controlCandidatos;
     ControladorSesion controlSesion;
-    
+    private static VentanaPrincipal vtnPrin;
 
     /**
      * Creates new form introVotos
@@ -29,6 +30,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         
         
         initComponents();
+    }
+    
+    public static VentanaPrincipal getInstance(ControladorVotos controladorDeVotos, ControladorSesion controladorSesion) {
+        if (vtnPrin == null) {
+            vtnPrin = new VentanaPrincipal(controladorDeVotos, controladorSesion);
+        }
+        return vtnPrin;
     }
 
     public void iniciarDatosEnVentana(ArrayList<Candidato> candidatos) {

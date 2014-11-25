@@ -26,7 +26,7 @@ public class InicioSesion extends javax.swing.JFrame {
      * Creates new form InicioSesion
      */
     public InicioSesion() {
-        admin = AdminVotos.getInstance();
+        admin = AdminVotos.getInstance();        
         votos = new ControladorVotos(admin, 0);
         sesion = new ControladorSesion(admin,0) ;
         initComponents();        
@@ -154,11 +154,13 @@ public class InicioSesion extends javax.swing.JFrame {
             //admin.inicializarCandidatos();
             //admin.inicializarEventos();
             
-            //Barras2 b = new Barras2(admin, 0);
+            Barras2 b = Barras2.getInstance(admin, 0);
+            Pastel2 p = Pastel2.getInstance(admin, 0);
             
-            Barras b=new Barras(admin,0);
-            Pastel p=new Pastel(admin,0);
-            Numeros v= new Numeros(admin, 0);
+            //Barras b=new Barras(admin,0);
+            //Pastel p=new Pastel(admin,0);
+            Numeros v =  Numeros.getInstance(admin, 0);
+        
             
 
             votos.actualizarVentana();

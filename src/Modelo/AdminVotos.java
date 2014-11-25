@@ -152,7 +152,7 @@ public class AdminVotos extends ClaseModelo {
 
     public void cerrarSesion() {
         shiro.logOut();
-        AdminVotos.adminVtos = null;
+        //AdminVotos.adminVtos = null;
         limpiarCache();
         cerrarVentanas();
         AdminVotos.getInstance();

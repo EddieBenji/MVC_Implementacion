@@ -13,9 +13,17 @@ public class Numeros extends ClaseVista {
 
     private VentanaTabla tablaCandidatos = new VentanaTabla();
     private ArrayList<Candidato> candidatos;
+    private static Numeros numeros;
 
     public Numeros(ClaseModelo modelo, int idEvento) {
         super(modelo, idEvento);
+    }
+    
+    public static Numeros getInstance(ClaseModelo modelo,int idEvento) {
+        if (numeros == null) {
+            numeros = new Numeros(modelo,idEvento);
+        }
+        return numeros;
     }
 
     @Override
