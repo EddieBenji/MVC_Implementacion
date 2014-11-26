@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<database xmlns="http://db.apache.org/torque/4.0/templates/database"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://db.apache.org/torque/4.0/templates/database
+        http://db.apache.org/torque/4.0/templates/database-strict.xsd"
+  name="MVCDB"
+  defaultIdMethod="native">
+  
+   <table name="candidato" description="Tabla de Candidatos">
+    <column
+      name="candidato_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="Candidato Id"/>
+    <column
+      name="nombre"
+      required="true"
+      type="VARCHAR"
+      size="128"
+      description="Nombre candidato"/>
+	 <column
+      name="num_votos"
+      required="true"      
+      type="INTEGER"
+      description="numero de votos del candidato"/>
+  </table>
+  
+  <table name="usuario" description="Tabla de Usuarios">
+    <column
+      name="usuario_id"
+      required="true"
+      primaryKey="true"
+      type="INTEGER"
+      description="Usuario Id"/>
+    <column
+      name="nombre"
+      required="true"
+      type="VARCHAR"
+      size="128"
+      description="Nombre usuario"/>
+	 <column
+      name="password"
+      required="true"      
+      type="VARCHAR"
+	  size="128"
+      description="password del candidato"/>
+	<column
+      name="rol"
+      required="true"      
+      type="VARCHAR"
+	  size="128"
+      description="rol del candidato"/>
+  </table>
+ </database>
