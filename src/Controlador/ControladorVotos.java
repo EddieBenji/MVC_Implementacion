@@ -40,4 +40,9 @@ public class ControladorVotos extends ClaseControlador {
         ventanaPrincipal.setVisible(true);
     }
     
+    public void permitirModificaciones(boolean permitido){
+        ventanaPrincipal.btnAgregar.setEnabled(permitido);
+        ventanaPrincipal.txtNombre.setEnabled(permitido);
+    }
+    
 }

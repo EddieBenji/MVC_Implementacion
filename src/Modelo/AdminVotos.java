@@ -36,6 +36,7 @@ public class AdminVotos extends ClaseModelo {
 
         inicializarCandidatos();
         inicializarEventos();
+        inicializarRoles();
         inicializarCuentas();
     }
 
@@ -71,10 +72,15 @@ public class AdminVotos extends ClaseModelo {
             eventos.add(new ClaseEvento(i));
         }
     }
+    
+    private void inicializarRoles(){
+        shiro.agregarRol("Admin");
+        shiro.agregarRol("Votante");
+    }
 
     private void inicializarCuentas() {
-        shiro.agregarCuenta("ed", "1");
-        shiro.agregarCuenta("sel", "1");
+        shiro.agregarCuenta("ed", "1", "Admin");
+        shiro.agregarCuenta("sel", "1", "Votante");
     }
 
     public void agregarVoto(int idCandidato) {
@@ -140,6 +146,10 @@ public class AdminVotos extends ClaseModelo {
         datos = obtenerCandidatos();
         return datos;
     }
+    
+    public boolean getRol(String rol){
+        return shiro.hasRol(rol);
+    }
 
     public boolean iniciarSesion(String usuario, String clave) {
         return shiro.logIn(usuario, clave);
@@ -156,6 +166,6 @@ public class AdminVotos extends ClaseModelo {
     }
 
     public void agregarCuenta(String usuario, String clave) {
-        shiro.agregarCuenta(usuario, clave);
+        shiro.agregarCuenta(usuario, clave, "Votante");
     }
 }
