@@ -159,6 +159,12 @@ public class InicioSesion extends javax.swing.JFrame {
             
 
             votos.actualizarVentana();
+            
+            if (admin.getRol("Admin")){
+                votos.permitirModificaciones(true);
+            }else{
+                votos.permitirModificaciones(false);
+            }
             this.dispose();
         }else{
             JOptionPane.showMessageDialog(null,"Error al iniciar sesión");
