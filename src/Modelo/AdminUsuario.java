@@ -28,6 +28,7 @@ public class AdminUsuario extends ClaseModelo {
     private final ControladorCache cache;
     private static final int MAX_ELEMENTOS_CACHE = 1000;
     private final Shiro shiro;
+    private static int id=501;
 
     public ArrayList observadores;
 
