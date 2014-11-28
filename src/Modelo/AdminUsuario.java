@@ -30,8 +30,8 @@ public class AdminUsuario extends ClaseModelo {
     public ArrayList observadores;
 
     private AdminUsuario() {
-        super.datos = new ArrayList();
-        observadores = new ArrayList();
+       // super.datos = new ArrayList();
+        //observadores = new ArrayList();
         cache = ControladorCache.getInstanciaCache();
         try {
 
