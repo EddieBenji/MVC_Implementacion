@@ -33,7 +33,7 @@ public class AdminVotos extends ClaseModelo {
         super.datos = new ArrayList();
         observadores = new ArrayList();
 
-        cache = new ControladorCache();
+        cache = ControladorCache.getInstanciaCache();
         try {
 
             cache.configLoad();
