@@ -81,7 +81,7 @@ public class AdminUsuario extends ClaseModelo {
         cache.put(usuario2.getID(),usuario2);
         
         } catch (CacheException ex) {
-            Logger.getLogger(AdminVotos.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AdminUsuario.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
