@@ -8,7 +8,8 @@ package Vista;
 
 import Controlador.ControladorSesion;
 import Controlador.ControladorVotos;
-import Modelo.AdminVotos;
+import Modelo.AdminUsuario;
+import Modelo.AdminCandidato;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,7 +18,8 @@ import javax.swing.JOptionPane;
  */
 public class InicioSesion extends javax.swing.JFrame {
     
-    AdminVotos admin;
+    AdminCandidato adminCands;
+    AdminUsuario adminUsers;
     ControladorVotos votos;
     ControladorSesion sesion;
     
@@ -26,10 +28,12 @@ public class InicioSesion extends javax.swing.JFrame {
      * Creates new form InicioSesion
      */
     public InicioSesion() {
-        admin = AdminVotos.getInstance();        
-        votos = new ControladorVotos(admin, 0);
-        sesion = new ControladorSesion(admin,0) ;
-        initComponents();        
+        adminCands = AdminCandidato.getInstance();  
+        adminUsers = AdminUsuario.getInstancia();
+        votos = new ControladorVotos(adminCands, 0);
+        sesion = new ControladorSesion(adminUsers,0) ;
+        initComponents();      
+        
     }
 
     /**
@@ -152,15 +156,15 @@ public class InicioSesion extends javax.swing.JFrame {
         //Validar el inicio de sesión
         if(sesion.iniciarSesion(usuario, password)){
             
-            Barras b = Barras.getInstance(admin, 0);
-            Pastel p = Pastel.getInstance(admin, 0);
-            Numeros v =  Numeros.getInstance(admin, 0);
+            Barras b = Barras.getInstance(adminCands, 0);
+            Pastel p = Pastel.getInstance(adminCands, 0);
+            Numeros v =  Numeros.getInstance(adminCands, 0);
         
             
 
             votos.actualizarVentana();
             
-            if (admin.getRol("Admin")){
+            if (adminUsers.getRol("Admin")){
                 votos.permitirModificaciones(true);
             }else{
                 votos.permitirModificaciones(false);

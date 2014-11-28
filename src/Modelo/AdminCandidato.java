@@ -6,30 +6,26 @@
 package Modelo;
 
 import Clases.ControladorCache;
-import Clases.Shiro;
 import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
 import java.awt.Window;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 import org.apache.jcs.access.exception.CacheException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
 
 /**
  *
  * @author Lalo
  */
-public class AdminVotos extends ClaseModelo {
+public class AdminCandidato extends ClaseModelo {
 
-    private static AdminVotos adminVtos;
+    private static AdminCandidato adminVtos;
     private final ControladorCache cache;
     private static final int MAX_ELEMENTOS_CACHE = 1000;
-    private final Shiro shiro;
+    
 
     public ArrayList observadores;
 
-    private AdminVotos() {
+    private AdminCandidato() {
         super.datos = new ArrayList();
         observadores = new ArrayList();
 
@@ -42,12 +38,10 @@ public class AdminVotos extends ClaseModelo {
             ex.printStackTrace();
         }
 
-        shiro = new Shiro();
+        
 
         inicializarCandidatos();
         inicializarEventos();
-        inicializarRoles();
-        inicializarCuentas();
     }
 
     /**
@@ -56,9 +50,9 @@ public class AdminVotos extends ClaseModelo {
      *
      * @return
      */
-    public static AdminVotos getInstance() {
+    public static AdminCandidato getInstance() {
         if (adminVtos == null) {
-            adminVtos = new AdminVotos();
+            adminVtos = new AdminCandidato();
         }
         return adminVtos;
     }
@@ -86,16 +80,6 @@ public class AdminVotos extends ClaseModelo {
         for (int i = 0; i < 3; i++) {
             eventos.add(new ClaseEvento(i));
         }
-    }
-
-    private void inicializarRoles() {
-        shiro.agregarRol("Admin");
-        shiro.agregarRol("Votante");
-    }
-
-    private void inicializarCuentas() {
-        shiro.agregarCuenta("ed", "1", "Admin");
-        shiro.agregarCuenta("sel", "1", "Votante");
     }
 
     public void agregarVoto(int idCandidato) {
@@ -180,34 +164,7 @@ public class AdminVotos extends ClaseModelo {
         return datos;
     }
 
-    public boolean getRol(String rol) {
-        return shiro.hasRol(rol);
-    }
-
-    public boolean iniciarSesion(String usuario, String clave) {
-        boolean pudoEntrar = false;
-        try {
-            pudoEntrar = shiro.logIn(usuario, clave);
-        } catch (UnknownAccountException uae) {
-
-            JOptionPane.showMessageDialog(null, "No hay usuario con el nombre "
-                    + usuario);
-            uae.printStackTrace();
-        } catch (IncorrectCredentialsException ice) {
-
-            JOptionPane.showMessageDialog(null, "Password para la cuenta "
-                    + clave + " es incorrecto");
-
-            ice.printStackTrace();
-        }
-
-        return pudoEntrar;
-    }
-
-    public void cerrarSesion() {
-        shiro.logOut();
-        cerrarVentanas();
-    }
+  
 
     public void cerrarVentanas() {
         for (Window window : java.awt.Window.getWindows()) {
@@ -215,7 +172,4 @@ public class AdminVotos extends ClaseModelo {
         }
     }
 
-    public void agregarCuenta(String usuario, String clave) {
-        shiro.agregarCuenta(usuario, clave, "Votante");
-    }
 }

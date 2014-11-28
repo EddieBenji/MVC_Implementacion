@@ -8,7 +8,7 @@ package Vista;
 import Fmat.Framework.Modelo.ClaseModelo;
 import Fmat.Framework.Modelo.InterfazObserver;
 import Fmat.Framework.Vista.ClaseVista;
-import Modelo.AdminVotos;
+import Modelo.AdminCandidato;
 import Modelo.Candidato;
 import java.util.ArrayList;
 import org.jfree.chart.ChartFactory;
@@ -23,7 +23,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
  */
 public class Barras extends ClaseVista {
     
-    public AdminVotos adminVotos;
+    public AdminCandidato adminVotos;
     private static Barras barras2;
     private ArrayList<Candidato> candidatos;
     

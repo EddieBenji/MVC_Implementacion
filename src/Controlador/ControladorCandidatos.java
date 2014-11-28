@@ -2,7 +2,7 @@ package Controlador;
 
 import Fmat.Framework.Controlador.ClaseControlador;
 import Fmat.Framework.Modelo.ClaseModelo;
-import Modelo.AdminVotos;
+import Modelo.AdminCandidato;
 
 /**
  *
@@ -17,11 +17,11 @@ public class ControladorCandidatos extends ClaseControlador {
     }
 
     public void agregarCandidato(int id, String candidato) {
-        ((AdminVotos) super.getModelo()).agregarCandidatos(id, candidato);
+        ((AdminCandidato) super.getModelo()).agregarCandidatos(id, candidato);
     }
 
     public void eliminarCandidato(String candidato) {
-        ((AdminVotos) super.getModelo()).eliminarCandidatos(candidato, this.nombre);
+        ((AdminCandidato) super.getModelo()).eliminarCandidatos(candidato, this.nombre);
     }
 
     @Override

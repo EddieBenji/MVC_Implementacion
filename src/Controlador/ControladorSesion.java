@@ -7,7 +7,7 @@ package Controlador;
 
 import Fmat.Framework.Controlador.ClaseControlador;
 import Fmat.Framework.Modelo.ClaseModelo;
-import Modelo.AdminVotos;
+import Modelo.AdminUsuario;
 
 /**
  *
@@ -20,13 +20,13 @@ public class ControladorSesion extends ClaseControlador {
     }
     
     public boolean iniciarSesion(String usuario, String clave){
-        return ((AdminVotos)super.getModelo()).iniciarSesion(usuario, clave);
+        return (AdminUsuario.getInstancia()).iniciarSesion(usuario, clave);
     }
     public void cerrarSesion(){
-        ((AdminVotos)super.getModelo()).cerrarSesion();
+        (AdminUsuario.getInstancia()).cerrarSesion();
     }
     public void agregarCuenta(String usuario, String clave){
-        ((AdminVotos)super.getModelo()).agregarCuenta(usuario, clave);
+        (AdminUsuario.getInstancia()).agregarCuenta(usuario, clave);
     }
     @Override
     public void actualizar(Object obj) {

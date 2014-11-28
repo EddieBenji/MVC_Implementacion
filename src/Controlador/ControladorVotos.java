@@ -7,7 +7,7 @@ package Controlador;
 
 import Fmat.Framework.Controlador.ClaseControlador;
 import Fmat.Framework.Modelo.ClaseModelo;
-import Modelo.AdminVotos;
+import Modelo.AdminCandidato;
 import Modelo.Candidato;
 import Vista.VentanaPrincipal;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 public class ControladorVotos extends ClaseControlador {
     
-    ControladorSesion controlSesion = new ControladorSesion(((AdminVotos) super.getModelo()), 0);
+    ControladorSesion controlSesion = new ControladorSesion(((AdminCandidato) super.getModelo()), 0);
     VentanaPrincipal ventanaPrincipal;
 
     public ControladorVotos(ClaseModelo modelo, int idEvento) {
@@ -27,7 +27,7 @@ public class ControladorVotos extends ClaseControlador {
     }
 
     public void realizarVotacion(int idCandidato) {
-        ((AdminVotos) super.getModelo()).agregarVoto(idCandidato);
+        ((AdminCandidato) super.getModelo()).agregarVoto(idCandidato);
     }
 
     @Override

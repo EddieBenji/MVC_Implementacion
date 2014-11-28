@@ -7,7 +7,7 @@ package Vista;
 
 import Fmat.Framework.Modelo.ClaseModelo;
 import Fmat.Framework.Vista.ClaseVista;
-import Modelo.AdminVotos;
+import Modelo.AdminCandidato;
 import Modelo.Candidato;
 import java.util.ArrayList;
 import org.jfree.chart.ChartFactory;
@@ -21,7 +21,7 @@ import org.jfree.data.general.DefaultPieDataset;
  */
 public class Pastel extends ClaseVista {
     
-    public AdminVotos adminVotos;
+    public AdminCandidato adminVotos;
     private static Pastel pastel2;
     private ArrayList<Candidato> candidatos;
     
