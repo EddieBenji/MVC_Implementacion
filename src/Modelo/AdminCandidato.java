@@ -23,12 +23,10 @@ public class AdminCandidato extends ClaseModelo {
     private static final int MAX_ELEMENTOS_CACHE = 1000;
     
 
-    public ArrayList observadores;
+   // public ArrayList observadores;
 
     private AdminCandidato() {
-        super.datos = new ArrayList();
-        observadores = new ArrayList();
-
+      //  observadores = new ArrayList();
         cache = ControladorCache.getInstanciaCache();
         try {
 
@@ -37,9 +35,6 @@ public class AdminCandidato extends ClaseModelo {
             System.out.println("Error con la inicialización de la caché");
             ex.printStackTrace();
         }
-
-        
-
         inicializarCandidatos();
         inicializarEventos();
     }
@@ -163,8 +158,6 @@ public class AdminCandidato extends ClaseModelo {
         datos = obtenerCandidatos();
         return datos;
     }
-
-  
 
     public void cerrarVentanas() {
         for (Window window : java.awt.Window.getWindows()) {
