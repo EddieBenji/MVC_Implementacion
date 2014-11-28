@@ -11,6 +11,10 @@ import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
 import java.awt.Window;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import org.apache.jcs.access.exception.CacheException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
 
 /**
  *
@@ -28,10 +32,16 @@ public class AdminVotos extends ClaseModelo {
     private AdminVotos() {
         super.datos = new ArrayList();
         observadores = new ArrayList();
-        
+
         cache = new ControladorCache();
-        cache.configLoad();
-        
+        try {
+
+            cache.configLoad();
+        } catch (CacheException ex) {
+            System.out.println("Error con la inicialización de la caché");
+            ex.printStackTrace();
+        }
+
         shiro = new Shiro();
 
         inicializarCandidatos();
@@ -57,14 +67,19 @@ public class AdminVotos extends ClaseModelo {
      * Inicializa en memoria 3 candidatos por default.
      */
     private void inicializarCandidatos() {
-        Candidato A = new Candidato(1, "Pepe", 0);
-        cache.put(A.getID(), A);
+        try {
+            Candidato A = new Candidato(1, "Pepe", 0);
+            cache.put(A.getID(), A);
 
-        Candidato B = new Candidato(2, "Esteban", 0);
-        cache.put(B.getID(), B);
+            Candidato B = new Candidato(2, "Esteban", 0);
+            cache.put(B.getID(), B);
 
-        Candidato C = new Candidato(3, "Jorge", 0);
-        cache.put(C.getID(), C);
+            Candidato C = new Candidato(3, "Jorge", 0);
+            cache.put(C.getID(), C);
+        } catch (CacheException ex) {
+            System.out.println("Error con la caché");
+            ex.printStackTrace();
+        }
     }
 
     private void inicializarEventos() {
@@ -72,8 +87,8 @@ public class AdminVotos extends ClaseModelo {
             eventos.add(new ClaseEvento(i));
         }
     }
-    
-    private void inicializarRoles(){
+
+    private void inicializarRoles() {
         shiro.agregarRol("Admin");
         shiro.agregarRol("Votante");
     }
@@ -84,11 +99,16 @@ public class AdminVotos extends ClaseModelo {
     }
 
     public void agregarVoto(int idCandidato) {
-        Candidato unCandidato = (Candidato) cache.get(idCandidato);
-        unCandidato.agregarVoto();
-        cache.put(idCandidato, unCandidato);
+        try {
+            Candidato unCandidato = (Candidato) cache.get(idCandidato);
+            unCandidato.agregarVoto();
+            cache.put(idCandidato, unCandidato);
 
-        notificarObservadoresEvento(0);
+            notificarObservadoresEvento(0);
+        } catch (CacheException ex) {
+            System.out.println("Error con la caché");
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -98,10 +118,16 @@ public class AdminVotos extends ClaseModelo {
      * @param nombre
      */
     public void agregarCandidatos(int id, String nombre) {
-        Candidato nuevoCandidato = new Candidato(id, nombre, 0);
+        try {
+            Candidato nuevoCandidato = new Candidato(id, nombre, 0);
 
-        cache.put(id, nuevoCandidato);
-        notificarObservadoresEvento(0);
+            cache.put(id, nuevoCandidato);
+            notificarObservadoresEvento(0);
+        } catch (CacheException ex) {
+
+            System.out.println("Error con la caché");
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -126,14 +152,21 @@ public class AdminVotos extends ClaseModelo {
         //recorremos toda la caché:
         for (int i = 1; i <= MAX_ELEMENTOS_CACHE; i++) {
 
-            //obtenemos el candidato de la caché:
-            Candidato unCandidato = (Candidato) cache.get(i);
+            try {
+                //obtenemos el candidato de la caché:
+                Candidato unCandidato = (Candidato) cache.get(i);
 
-            //si lo que devuelve la caché es nulo, entonces dejamos de recorrer
-            //toda la caché.
-            if (unCandidato == null) break;
-            
-            candidatos.add(unCandidato);
+                //si lo que devuelve la caché es nulo, entonces dejamos de recorrer
+                //toda la caché.
+                if (unCandidato == null) {
+                    break;
+                }
+
+                candidatos.add(unCandidato);
+            } catch (CacheException ex) {
+                System.out.println("Error con la caché");
+                ex.printStackTrace();
+            }
 
         }
         /*Nótese que este ArrayList, fue llenado 
@@ -146,13 +179,29 @@ public class AdminVotos extends ClaseModelo {
         datos = obtenerCandidatos();
         return datos;
     }
-    
-    public boolean getRol(String rol){
+
+    public boolean getRol(String rol) {
         return shiro.hasRol(rol);
     }
 
     public boolean iniciarSesion(String usuario, String clave) {
-        return shiro.logIn(usuario, clave);
+        boolean pudoEntrar = false;
+        try {
+            pudoEntrar = shiro.logIn(usuario, clave);
+        } catch (UnknownAccountException uae) {
+
+            JOptionPane.showMessageDialog(null, "No hay usuario con el nombre "
+                    + usuario);
+            uae.printStackTrace();
+        } catch (IncorrectCredentialsException ice) {
+
+            JOptionPane.showMessageDialog(null, "Password para la cuenta "
+                    + clave + " es incorrecto");
+
+            ice.printStackTrace();
+        }
+
+        return pudoEntrar;
     }
 
     public void cerrarSesion() {
@@ -161,8 +210,9 @@ public class AdminVotos extends ClaseModelo {
     }
 
     public void cerrarVentanas() {
-        for (Window window : java.awt.Window.getWindows()) 
+        for (Window window : java.awt.Window.getWindows()) {
             window.dispose();
+        }
     }
 
     public void agregarCuenta(String usuario, String clave) {

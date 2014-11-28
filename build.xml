@@ -8,65 +8,6 @@
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
 <project name="MVC_Implementacion" default="main" basedir=".">
-   
-    <path id="ant-classpath">
-        <fileset dir="lib/ant">
-            <include name="*.jar"/>
-        </fileset>
-    </path>
-
-    <path id="runtime-classpath">
-        <fileset dir="lib/runtime">
-            <include name="*.jar"/>
-        </fileset>
-    </path>
-
-    <taskdef
-        name="torque-generator"
-        classpathref="ant-classpath"
-        classname="org.apache.torque.ant.task.TorqueGeneratorTask"/>
-
-    <target name="generate"
-          description="==> generates sql + om classes">
-        <torque-generator 
-            packaging="classpath"
-            configPackage="org.apache.torque.templates.om"
-            sourceDir="src/main/schema">
-            <option key="torque.om.package" value="org.apache.torque.tutorial.om"/>
-            <option key="torque.database" value="mysql"/>
-        </torque-generator>
-    </target>
-
-    <target name="compile">
-        <mkdir dir="target/classes"/>
-        <javac debug="on" source="1.5" destdir="target/classes">
-            <src path="src/main/java"/>
-            <src path="src/main/generated-java"/>
-            <src path="target/generated-sources"/>
-            <classpath refid="runtime-classpath"/>
-        </javac>
-        <copy todir="target/classes">
-            <fileset dir="src/main/resources"/>
-        </copy>
-    </target>
-
-    <target name="execute-sql">
-        <sql classpathref="ant-classpath"
-         driver="org.gjt.mm.mysql.Driver"
-         url="jdbc:mysql://localhost:3306/mvcdb"
-         userid="root"        
-         password=""      
-         onerror="continue"
-         src="target/generated-sql/mvcdb-schema.sql"/>
-    </target>
-
-    <target name="clean">
-        <delete dir="target" />
-    </target>
-
-    <target name="main" description="build all" depends="generate, compile">
-    </target>
-
     <description>Builds, tests, and runs the project MVC_Implementacion.</description>
     <import file="nbproject/build-impl.xml"/>
 </project>
