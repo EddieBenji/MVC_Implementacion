@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://db.apache.org/torque/4.0/templates/database
         http://db.apache.org/torque/4.0/templates/database-strict.xsd"
-  name="MVCDB"
+  name="mvcdb"
   defaultIdMethod="native">
   
    <table name="candidato" description="Tabla de Candidatos">
