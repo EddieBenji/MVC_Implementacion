@@ -92,6 +92,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         txtElim.setEnabled(false);
 
         btnEliminar.setText("Eliminar Candidato");
+        btnEliminar.setEnabled(false);
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarActionPerformed(evt);

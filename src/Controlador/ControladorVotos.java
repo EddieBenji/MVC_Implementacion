@@ -38,6 +38,7 @@ public class ControladorVotos extends ClaseControlador {
     public void actualizarVentana() {
         ventanaPrincipal.iniciarDatosEnVentana((ArrayList<Candidato>) modelo.getDatos());
         ventanaPrincipal.setVisible(true);
+        
     }
     
     public void permitirModificaciones(boolean permitido){

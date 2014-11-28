@@ -28,12 +28,12 @@ public class AdminUsuario extends ClaseModelo {
     private final ControladorCache cache;
     private static final int MAX_ELEMENTOS_CACHE = 1000;
     private final Shiro shiro;
-    private static int id=501;
+    private static int id = 501;
 
     public ArrayList observadores;
 
     private AdminUsuario() {
-       // super.datos = new ArrayList();
+        // super.datos = new ArrayList();
         //observadores = new ArrayList();
         cache = ControladorCache.getInstanciaCache();
         try {
@@ -70,22 +70,28 @@ public class AdminUsuario extends ClaseModelo {
     }
 
     private void inicializarCuentas() {
-         shiro.agregarCuenta("ed", "1", "Admin");
-        Usuario usuario1=new Usuario(id,"ed","1","Admin");
+        shiro.agregarCuenta("ed", "1", "Admin");
+        Usuario unUsuario = new Usuario(id, "ed", "1", "Admin");
         id++;
         try {
-            cache.put(usuario1.getID(),usuario1);
+            cache.put(unUsuario.getID(), unUsuario);
+            
             shiro.agregarCuenta("sel", "1", "Votante");
-        Usuario usuario2=new Usuario(id,"sel", "1", "Votante");
-        id++;
-        cache.put(usuario2.getID(),usuario2);
-        
+             unUsuario = new Usuario(id, "sel", "1", "Votante");
+            id++;
+            cache.put(unUsuario.getID(), unUsuario);
+
         } catch (CacheException ex) {
             Logger.getLogger(AdminUsuario.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
 
+    public void registrarUsuario(){
+        
+    }
+    
+    
     public boolean getRol(String rol) {
         return shiro.hasRol(rol);
     }
@@ -118,9 +124,9 @@ public class AdminUsuario extends ClaseModelo {
     public void agregarCuenta(String usuario, String clave) {
         try {
             shiro.agregarCuenta(usuario, clave, "Votante");
-            Usuario nuevo=new Usuario(id,usuario,clave,"Votante");
+            Usuario nuevo = new Usuario(id, usuario, clave, "Votante");
             id++;
-                cache.put(nuevo.getID(),nuevo);
+            cache.put(nuevo.getID(), nuevo);
         } catch (CacheException ex) {
             Logger.getLogger(AdminUsuario.class.getName()).log(Level.SEVERE, null, ex);
         }
