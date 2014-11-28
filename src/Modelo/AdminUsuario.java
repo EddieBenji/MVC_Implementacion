@@ -11,6 +11,8 @@ import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.apache.jcs.access.exception.CacheException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -26,6 +28,7 @@ public class AdminUsuario extends ClaseModelo {
     private final ControladorCache cache;
     private static final int MAX_ELEMENTOS_CACHE = 1000;
     private final Shiro shiro;
+    private static int id=501;
 
     public ArrayList observadores;
 
@@ -67,8 +70,20 @@ public class AdminUsuario extends ClaseModelo {
     }
 
     private void inicializarCuentas() {
-        shiro.agregarCuenta("ed", "1", "Admin");
-        shiro.agregarCuenta("sel", "1", "Votante");
+         shiro.agregarCuenta("ed", "1", "Admin");
+        Usuario usuario1=new Usuario(id,"ed","1","Admin");
+        id++;
+        try {
+            cache.put(usuario1.getID(),usuario1);
+            shiro.agregarCuenta("sel", "1", "Votante");
+        Usuario usuario2=new Usuario(id,"sel", "1", "Votante");
+        id++;
+        cache.put(usuario2.getID(),usuario2);
+        
+        } catch (CacheException ex) {
+            Logger.getLogger(AdminUsuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     public boolean getRol(String rol) {
@@ -101,7 +116,14 @@ public class AdminUsuario extends ClaseModelo {
     }
 
     public void agregarCuenta(String usuario, String clave) {
-        shiro.agregarCuenta(usuario, clave, "Votante");
+        try {
+            shiro.agregarCuenta(usuario, clave, "Votante");
+            Usuario nuevo=new Usuario(id,usuario,clave,"Votante");
+            id++;
+                cache.put(nuevo.getID(),nuevo);
+        } catch (CacheException ex) {
+            Logger.getLogger(AdminUsuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private ArrayList<Usuario> obtenerUsuarios() {
