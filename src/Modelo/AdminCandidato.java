@@ -6,10 +6,15 @@
 package Modelo;
 
 import Clases.ControladorCache;
+import Controlador.ControladorCandidatos;
+import Controlador.DAOS.DAOCandidato;
 import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
 import java.awt.Window;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.jcs.access.exception.CacheException;
 
 /**
@@ -21,7 +26,8 @@ public class AdminCandidato extends ClaseModelo {
     private static AdminCandidato adminVtos;
     private final ControladorCache cache;
     private static final int MAX_ELEMENTOS_CACHE = 1000;
-    
+    private DAOCandidato daoCan = new DAOCandidato();
+    private ControladorCandidatos ctrlCands = new ControladorCandidatos(this, 0);
 
    // public ArrayList observadores;
 
@@ -59,12 +65,15 @@ public class AdminCandidato extends ClaseModelo {
         try {
             Candidato A = new Candidato(1, "Pepe", 0);
             cache.put(A.getID(), A);
+            ctrlCands.addCandidato(A);
 
             Candidato B = new Candidato(2, "Esteban", 0);
             cache.put(B.getID(), B);
+            ctrlCands.addCandidato(B);
 
             Candidato C = new Candidato(3, "Jorge", 0);
             cache.put(C.getID(), C);
+            ctrlCands.addCandidato(C);
         } catch (CacheException ex) {
             System.out.println("Error con la caché");
             ex.printStackTrace();

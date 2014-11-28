@@ -79,10 +79,7 @@ public class Candidato implements Cacheable, java.io.Serializable{
 
     @Override
     public String toString() {
-        return "Candidato: \n"
-                + "Clave del Candidato: " + idCandidato + "\n"
-                + "Nombre: " + nombre + "\n"
-                + "Número de votos:" + numVotos;
+        return getID()+"', '"+getNombre()+"', '"+getNumVotos();
     }
 
 
