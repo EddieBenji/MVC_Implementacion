@@ -22,7 +22,7 @@ public class ControladorCandidatos extends ClaseControlador {
         
         super(modelo, idEvento);
        // System.out.println("entre1");
-        daoCan.establishConnection("localhost", "3306", "root", "","mvcdb");
+       
         //System.out.println("entre2 ");
         try {
             System.out.println(daoCan.getConnection());
