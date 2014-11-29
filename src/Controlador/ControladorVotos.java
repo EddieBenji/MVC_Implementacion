@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controlador;
 
 import Fmat.Framework.Controlador.ClaseControlador;
@@ -27,7 +22,7 @@ public class ControladorVotos extends ClaseControlador {
     }
 
     public void realizarVotacion(int idCandidato) {
-        ((AdminCandidato) super.getModelo()).agregarVoto(idCandidato);
+        (AdminCandidato.getInstance()).agregarVoto(idCandidato);
     }
 
     @Override
@@ -44,6 +39,8 @@ public class ControladorVotos extends ClaseControlador {
     public void permitirModificaciones(boolean permitido){
         ventanaPrincipal.btnAgregar.setEnabled(permitido);
         ventanaPrincipal.txtNombre.setEnabled(permitido);
+        ventanaPrincipal.btnEliminar.setEnabled(permitido);
+        ventanaPrincipal.comboCandidatosEliminar.setEnabled(permitido);
     }
     
 }

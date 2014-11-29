@@ -26,7 +26,7 @@ public class ControladorSesion extends ClaseControlador {
         (AdminUsuario.getInstancia()).cerrarSesion();
     }
     public void agregarCuenta(String usuario, String clave){
-        (AdminUsuario.getInstancia()).agregarCuenta(usuario, clave);
+        (AdminUsuario.getInstancia()).registrarCuenta(usuario, clave);
     }
     @Override
     public void actualizar(Object obj) {

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Vista;
 
 import Controlador.ControladorSesion;
@@ -20,19 +19,18 @@ public class InicioSesion extends javax.swing.JFrame {
     
     AdminCandidato adminCands;
     AdminUsuario adminUsers;
-    ControladorVotos votos;
-    ControladorSesion sesion;
-    
-    
+    ControladorVotos controladorVotos;
+    ControladorSesion controladorSesion;
+
     /**
      * Creates new form InicioSesion
      */
     public InicioSesion() {
-        adminCands = AdminCandidato.getInstance();  
+        adminCands = AdminCandidato.getInstance();        
         adminUsers = AdminUsuario.getInstancia();
-        votos = new ControladorVotos(adminCands, 0);
-        sesion = new ControladorSesion(adminUsers,0) ;
-        initComponents();      
+        controladorVotos = new ControladorVotos(adminCands, 0);
+        controladorSesion = new ControladorSesion(adminUsers, 0);
+        initComponents();        
         
     }
 
@@ -145,33 +143,32 @@ public class InicioSesion extends javax.swing.JFrame {
 
     private void registrar_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registrar_btnActionPerformed
         // TODO add your handling code here:
-        new Registro(sesion).setVisible(true);
+        new Registro(controladorSesion).setVisible(true);
     }//GEN-LAST:event_registrar_btnActionPerformed
 
     private void iniciar_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_iniciar_btnActionPerformed
         // TODO add your handling code here:
         String usuario = usuario_txt.getText();
         String password = password_txt.getText();
-       
+
         //Validar el inicio de sesión
-        if(sesion.iniciarSesion(usuario, password)){
+        if (controladorSesion.iniciarSesion(usuario, password)) {
             
             Barras b = Barras.getInstance(adminCands, 0);
             Pastel p = Pastel.getInstance(adminCands, 0);
-            Numeros v =  Numeros.getInstance(adminCands, 0);
-        
+            Numeros v = Numeros.getInstance(adminCands, 0);
             
-
-            votos.actualizarVentana();
+            controladorVotos.actualizarVentana();
             
-            if (adminUsers.getRol("Admin")){
-                votos.permitirModificaciones(true);
-            }else{
-                votos.permitirModificaciones(false);
+            if (adminUsers.getRol("Admin") && adminUsers.getPermiso("*")) {
+                controladorVotos.permitirModificaciones(true);
+            } else {
+                controladorVotos.permitirModificaciones(false);
             }
+            
             this.dispose();
-        }else{
-            JOptionPane.showMessageDialog(null,"Error al iniciar sesión");
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al iniciar sesión");
         }
         usuario_txt.setText("");
         password_txt.setText("");

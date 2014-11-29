@@ -6,16 +6,15 @@
 package Modelo;
 
 import Clases.ControladorCache;
-import Controlador.ControladorCandidatos;
+import Clases.ExcepcionArchivoConfiguracion;
+import Clases.ExcepcionObjetoDesconocido;
+import Clases.ExcepcionObjetoDuplicado;
 import Controlador.DAOS.DAOCandidato;
 import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
 import java.awt.Window;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.jcs.access.exception.CacheException;
 
 /**
  *
@@ -25,24 +24,21 @@ public class AdminCandidato extends ClaseModelo {
 
     private static AdminCandidato adminVtos;
     private final ControladorCache cache;
-    private static final int MAX_ELEMENTOS_CACHE = 1000;
-    private DAOCandidato daoCan = new DAOCandidato();
-    private ControladorCandidatos ctrlCands = new ControladorCandidatos(this, 0);
+    private DAOCandidato daoCandidato = new DAOCandidato();
 
-   // public ArrayList observadores;
+    private int contadorCandidatos = 0;
 
     private AdminCandidato() {
-      //  observadores = new ArrayList();
         cache = ControladorCache.getInstanciaCache();
-        try {
 
+        try {
             cache.configLoad();
-        } catch (CacheException ex) {
+            inicializarCandidatos();
+            inicializarEventos();
+        } catch (ExcepcionArchivoConfiguracion ex) {
             System.out.println("Error con la inicialización de la caché");
             ex.printStackTrace();
         }
-        inicializarCandidatos();
-        inicializarEventos();
     }
 
     /**
@@ -62,40 +58,14 @@ public class AdminCandidato extends ClaseModelo {
      * Inicializa en memoria 3 candidatos por default.
      */
     private void inicializarCandidatos() {
-        try {
-            Candidato A = new Candidato(1, "Pepe", 0);
-            cache.put(A.getID(), A);
-            ctrlCands.addCandidato(A);
-
-            Candidato B = new Candidato(2, "Esteban", 0);
-            cache.put(B.getID(), B);
-            ctrlCands.addCandidato(B);
-
-            Candidato C = new Candidato(3, "Jorge", 0);
-            cache.put(C.getID(), C);
-            ctrlCands.addCandidato(C);
-        } catch (CacheException ex) {
-            System.out.println("Error con la caché");
-            ex.printStackTrace();
-        }
+        agregarCandidatos(1, "Pepe");
+        agregarCandidatos(2, "Esteban");
+        agregarCandidatos(3, "Jorge");
     }
 
     private void inicializarEventos() {
         for (int i = 0; i < 3; i++) {
             eventos.add(new ClaseEvento(i));
-        }
-    }
-
-    public void agregarVoto(int idCandidato) {
-        try {
-            Candidato unCandidato = (Candidato) cache.get(idCandidato);
-            unCandidato.agregarVoto();
-            cache.put(idCandidato, unCandidato);
-
-            notificarObservadoresEvento(0);
-        } catch (CacheException ex) {
-            System.out.println("Error con la caché");
-            ex.printStackTrace();
         }
     }
 
@@ -107,13 +77,33 @@ public class AdminCandidato extends ClaseModelo {
      */
     public void agregarCandidatos(int id, String nombre) {
         try {
+
+            contadorCandidatos++;
             Candidato nuevoCandidato = new Candidato(id, nombre, 0);
+            //lo mete a la caché:
+            cache.put(nuevoCandidato);
+            //lo mete a la BD:
+            daoCandidato.addElement(nuevoCandidato);
 
-            cache.put(id, nuevoCandidato);
             notificarObservadoresEvento(0);
-        } catch (CacheException ex) {
 
-            System.out.println("Error con la caché");
+        } catch (ExcepcionObjetoDuplicado | SQLException ex) {
+            System.out.println("Error: " + ex.getLocalizedMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    public void agregarVoto(int idCandidato) {
+        try {
+            Candidato unCandidato = (Candidato) cache.get(idCandidato);
+            unCandidato.agregarVoto();
+
+            cache.put(unCandidato);
+            //TAMBIÉN DEBERÁ ACTUALIZAR LA BD!!!
+
+            notificarObservadoresEvento(0);
+        } catch (ExcepcionObjetoDesconocido | ExcepcionObjetoDuplicado ex) {
+            System.out.println("Error:");
             ex.printStackTrace();
         }
     }
@@ -121,44 +111,54 @@ public class AdminCandidato extends ClaseModelo {
     /**
      * Elimina un candidato, de la lista de candidatos.
      *
-     * @param nombre
-     * @param peticion
+     * @param id
      */
-    public void eliminarCandidatos(String nombre, String peticion) {
-        for (Candidato candidato : ((ArrayList<Candidato>) getDatos())) {
-            if (candidato.getNombre().equals(nombre)) {
-                ((ArrayList<Candidato>) getDatos()).remove(candidato);
+    public void eliminarCandidatos(int id) {
+        try {
+            //lo eliminamos de la caché:
+            cache.delete(id);
+            if (id != contadorCandidatos) {//entonces no eliminará el último.
+                //Obtenemos el último de la caché:
+                Candidato unCandidato = (Candidato) cache.get(contadorCandidatos);
+
+                //a ese último, le seteamos el id del que acabamos de eliminar:
+                unCandidato.setIdCandidato(id);
+
+                //metemos el último con el id del que eliminamos.
+                cache.put(unCandidato);
+
+                //boramos el último, para no tener duplicados
+                cache.delete(contadorCandidatos);
             }
+
+            //actualizamos el contador, ya que se 
+            //disminuyó en uno la cantidad de datos en la memoria.
+            contadorCandidatos--;
+
+            //notificamos del cambio.
+            notificarObservadoresEvento(0);
+        } catch (ExcepcionObjetoDesconocido | ExcepcionObjetoDuplicado ex) {
+            System.out.println("Error:");
+            ex.printStackTrace();
         }
-        notificarObservadoresEvento(0);
     }
 
     private ArrayList<Candidato> obtenerCandidatos() {
         //declaramos el ArrayList que contendrá la información de los candidatos:
         ArrayList<Candidato> candidatos = new ArrayList<>();
 
-        //recorremos toda la caché:
-        for (int i = 1; i <= MAX_ELEMENTOS_CACHE; i++) {
-
+        //recorremos la caché:
+        for (int i = 1; i <= contadorCandidatos; i++) {
             try {
                 //obtenemos el candidato de la caché:
                 Candidato unCandidato = (Candidato) cache.get(i);
-
-                //si lo que devuelve la caché es nulo, entonces dejamos de recorrer
-                //toda la caché.
-                if (unCandidato == null) {
-                    break;
-                }
-
                 candidatos.add(unCandidato);
-            } catch (CacheException ex) {
-                System.out.println("Error con la caché");
+
+            } catch (ExcepcionObjetoDesconocido ex) {
+                System.out.println("Error:");
                 ex.printStackTrace();
             }
-
         }
-        /*Nótese que este ArrayList, fue llenado 
-         con la información de la caché.*/
         return candidatos;
     }
 

@@ -6,23 +6,25 @@ import Clases.Cacheable;
  *
  * @author Lalo
  */
-public class Usuario implements Cacheable, java.io.Serializable{
-    
+public class Usuario implements Cacheable {
+
     private int idUsuario;
     private String nombreUsuario;
-    private String password ;
-    private String rol ;
+    private String password;
+    private String rol;
+    private String permisos;
 
-    public Usuario() {}
+    public Usuario() {
+    }
 
-    
-    public Usuario(int idUsuario, String nombreUsuario, String password, String rol) {
+    public Usuario(int idUsuario, String nombreUsuario, String password, String rol, String permisos) {
         this.idUsuario = idUsuario;
         this.nombreUsuario = nombreUsuario;
         this.password = password;
         this.rol = rol;
+        this.permisos = permisos;
     }
-    
+
     @Override
     public int getID() {
         return idUsuario;
@@ -34,7 +36,7 @@ public class Usuario implements Cacheable, java.io.Serializable{
     public String getNombreUsuario() {
         return nombreUsuario;
     }
-    
+
     public String getRol() {
         return rol;
     }
@@ -44,6 +46,13 @@ public class Usuario implements Cacheable, java.io.Serializable{
      */
     public String getPassword() {
         return password;
+    }
+
+    /**
+     * @return the permisos
+     */
+    public String getPermisos() {
+        return permisos;
     }
 
     /**
@@ -70,7 +79,22 @@ public class Usuario implements Cacheable, java.io.Serializable{
     public void setRol(String rol) {
         this.rol = rol;
     }
-    
+
+    /**
+     * @param permisos the permisos to set
+     */
+    public void setPermisos(String permisos) {
+        this.permisos = permisos;
+    }
+
+    /**
+     *
+     * @param permisos
+     */
+    public void agregarPermisos(String permisos){
+        this.permisos += permisos;
+        
+    }
     
     
 }

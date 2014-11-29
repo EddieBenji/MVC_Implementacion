@@ -22,7 +22,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
      * @param controladorDeVotos
      * @param controladorSesion
      */
-    public VentanaPrincipal(ControladorVotos controladorDeVotos, ControladorSesion controladorSesion) {
+    private VentanaPrincipal(ControladorVotos controladorDeVotos, ControladorSesion controladorSesion) {
         this.controlSesion = controladorSesion;
         this.controlVotos = controladorDeVotos;
         this.controlCandidatos = new ControladorCandidatos(controladorDeVotos.getModelo(), 1);
@@ -43,8 +43,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         for (Candidato cand : candidatos) {
             modeloCombo.addElement(cand.getID()+" "+cand.getNombre());
         }
-        comboCandidatos.setModel(modeloCombo);
-
+        comboCandidatosVotar.setModel(modeloCombo);
+        comboCandidatosEliminar.setModel(modeloCombo);
     }
 
     /**
@@ -56,20 +56,20 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        comboCandidatos = new javax.swing.JComboBox();
+        comboCandidatosVotar = new javax.swing.JComboBox();
         btnVotar = new javax.swing.JButton();
         txtNombre = new javax.swing.JTextField();
         btnAgregar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        txtElim = new javax.swing.JTextField();
         btnEliminar = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         btnSalir = new javax.swing.JButton();
+        comboCandidatosEliminar = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        comboCandidatos.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboCandidatosVotar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         btnVotar.setText("Votar");
         btnVotar.addActionListener(new java.awt.event.ActionListener() {
@@ -89,10 +89,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jLabel2.setText("Para eliminar un candidato, introduzca su nombre: ");
 
-        txtElim.setEnabled(false);
-
         btnEliminar.setText("Eliminar Candidato");
-        btnEliminar.setEnabled(false);
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarActionPerformed(evt);
@@ -107,6 +104,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 btnSalirActionPerformed(evt);
             }
         });
+
+        comboCandidatosEliminar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -124,8 +123,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                                 .addComponent(btnAgregar))
                             .addComponent(jLabel2)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtElim, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(34, 34, 34)
+                                .addGap(10, 10, 10)
+                                .addComponent(comboCandidatosEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(93, 93, 93)
                                 .addComponent(btnEliminar))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(31, 31, 31)
@@ -133,7 +133,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(21, 21, 21)
-                                .addComponent(comboCandidatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(comboCandidatosVotar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(61, 61, 61)
                                 .addComponent(btnVotar))))
                     .addGroup(layout.createSequentialGroup()
@@ -148,7 +148,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(comboCandidatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboCandidatosVotar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnVotar))
                 .addGap(48, 48, 48)
                 .addComponent(jLabel1)
@@ -160,8 +160,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtElim, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnEliminar))
+                    .addComponent(btnEliminar)
+                    .addComponent(comboCandidatosEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btnSalir)
                 .addContainerGap(16, Short.MAX_VALUE))
@@ -172,7 +172,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     private void btnVotarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVotarActionPerformed
         
-        String palabras = (String) comboCandidatos.getSelectedItem();
+        String palabras = (String) comboCandidatosVotar.getSelectedItem();
         String strID = palabras.split(" ")[0];
         int id = Integer.parseInt(strID);
         
@@ -181,13 +181,18 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         
-        int nuevoID = comboCandidatos.getItemCount()+1;
+        int nuevoID = comboCandidatosVotar.getItemCount()+1;
         controlCandidatos.agregarCandidato(nuevoID,txtNombre.getText());
         txtNombre.setText("");
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         //adminCan.eliminarCandidato(txtElim.getText());
+       String palabras = (String) comboCandidatosEliminar.getSelectedItem();
+        String strID = palabras.split(" ")[0];
+        int id = Integer.parseInt(strID);
+        controlCandidatos.eliminarCandidato(id);
+        
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
@@ -199,14 +204,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnAgregar;
-    private javax.swing.JButton btnEliminar;
+    public javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnSalir;
     private javax.swing.JButton btnVotar;
-    private javax.swing.JComboBox comboCandidatos;
+    public javax.swing.JComboBox comboCandidatosEliminar;
+    private javax.swing.JComboBox comboCandidatosVotar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextField txtElim;
     public javax.swing.JTextField txtNombre;
     // End of variables declaration//GEN-END:variables
 }

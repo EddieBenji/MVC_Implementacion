@@ -6,15 +6,15 @@
 package Modelo;
 
 import Clases.ControladorCache;
+import Clases.ExcepcionArchivoConfiguracion;
+import Clases.ExcepcionObjetoDesconocido;
+import Clases.ExcepcionObjetoDuplicado;
 import Clases.Shiro;
 import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
 import java.awt.Window;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import org.apache.jcs.access.exception.CacheException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 
@@ -26,29 +26,21 @@ public class AdminUsuario extends ClaseModelo {
 
     private static AdminUsuario adminUsuario;
     private final ControladorCache cache;
-    private static final int MAX_ELEMENTOS_CACHE = 1000;
     private final Shiro shiro;
-    private static int id = 501;
-
-    public ArrayList observadores;
+    private static int contadorUsuario = 501;
 
     private AdminUsuario() {
-        // super.datos = new ArrayList();
-        //observadores = new ArrayList();
         cache = ControladorCache.getInstanciaCache();
+        shiro = new Shiro();
         try {
-
             cache.configLoad();
-        } catch (CacheException ex) {
-            System.out.println("Error con la inicialización de la caché");
+            inicializarEventos();
+            inicializarCuentas();
+
+        } catch (ExcepcionArchivoConfiguracion ex) {
+            System.out.println("Error:");
             ex.printStackTrace();
         }
-        shiro = new Shiro();
-
-        inicializarEventos();
-        inicializarRoles();
-        inicializarCuentas();
-
     }
 
     public static AdminUsuario getInstancia() {
@@ -64,43 +56,78 @@ public class AdminUsuario extends ClaseModelo {
         }
     }
 
-    private void inicializarRoles() {
-        shiro.agregarRol("Admin");
-        shiro.agregarRol("Votante");
-    }
-
     private void inicializarCuentas() {
-        shiro.agregarCuenta("ed", "1", "Admin");
-        Usuario unUsuario = new Usuario(id, "ed", "1", "Admin");
-        id++;
+        inicializarRoles();
+        //Se agrega: usuario, contraseña, rol
+        registrarCuenta("ed", "1", "Admin","*");
+        //Agregamos otra cuenta, pero con el rol de Votante:
+        registrarCuenta("sel", "1");
+    }
+
+    private void inicializarRoles() {
+        shiro.agregarRol("Admin","*");
+        shiro.agregarRol("Votante","Votar");
+    }
+
+    /**
+     * Registra una nueva cuenta en el shiro y en la caché, con los datos
+     * especificados.
+     *
+     * @param usuario
+     * @param clave
+     * @param rol
+     * @param permisos
+     */
+    public void registrarCuenta(String usuario, String clave, String rol,String permisos) {
         try {
-            cache.put(unUsuario.getID(), unUsuario);
-            
-            shiro.agregarCuenta("sel", "1", "Votante");
-             unUsuario = new Usuario(id, "sel", "1", "Votante");
-            id++;
-            cache.put(unUsuario.getID(), unUsuario);
 
-        } catch (CacheException ex) {
-            Logger.getLogger(AdminUsuario.class.getName()).log(Level.SEVERE, null, ex);
+            shiro.agregarCuenta(usuario, clave, rol);
+            Usuario nuevoUsuario = new Usuario(contadorUsuario, usuario, clave, rol,permisos);
+            cache.put(nuevoUsuario);
+            contadorUsuario++;
+            //FALTA A LA BD.
+        } catch (ExcepcionObjetoDuplicado ex) {
+            System.out.println("Error:");
+            ex.printStackTrace();
         }
-
     }
 
-    public void registrarUsuario(){
-        
+    /**
+     **Registra una nueva cuenta en el shiro y en la caché, con los datos
+     * especificados, pero con el rol de VOTANTE sin opción a otro Rol.
+     *
+     * @param usuario
+     * @param clave
+     */
+    public void registrarCuenta(String usuario, String clave) {
+        try {
+
+            shiro.agregarCuenta(usuario, clave, "Votante");
+            //la caché necesita un objeto!
+            Usuario nuevoUsuario = new Usuario(contadorUsuario, usuario, clave, "Votante","Votar");
+            cache.put(nuevoUsuario);
+            contadorUsuario++;
+            //FALTA A LA BD.
+        } catch (ExcepcionObjetoDuplicado ex) {
+            System.out.println("Error:");
+            ex.printStackTrace();
+        }
     }
-    
-    
+
     public boolean getRol(String rol) {
         return shiro.hasRol(rol);
     }
+    
+    public boolean getPermiso(String permiso){
+        return shiro.hasPermisos(permiso);
+    }
+    
 
     public boolean iniciarSesion(String usuario, String clave) {
         boolean pudoEntrar = false;
         try {
             pudoEntrar = shiro.logIn(usuario, clave);
-        } catch (UnknownAccountException uae) {
+        } catch (UnknownAccountException uae ) {
 
             JOptionPane.showMessageDialog(null, "No hay usuario con el nombre "
                     + usuario);
@@ -121,43 +148,22 @@ public class AdminUsuario extends ClaseModelo {
         cerrarVentanas();
     }
 
-    public void agregarCuenta(String usuario, String clave) {
-        try {
-            shiro.agregarCuenta(usuario, clave, "Votante");
-            Usuario nuevo = new Usuario(id, usuario, clave, "Votante");
-            id++;
-            cache.put(nuevo.getID(), nuevo);
-        } catch (CacheException ex) {
-            Logger.getLogger(AdminUsuario.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     private ArrayList<Usuario> obtenerUsuarios() {
         //declaramos el ArrayList que contendrá la información de los candidatos:
         ArrayList<Usuario> usuarios = new ArrayList<>();
 
         //recorremos toda la caché:
-        for (int i = 501; i <= MAX_ELEMENTOS_CACHE; i++) {
+        for (int i = 501; i <= contadorUsuario; i++) {
 
             try {
-                //obtenemos el candidato de la caché:
                 Usuario unUsuario = (Usuario) cache.get(i);
-
-                //si lo que devuelve la caché es nulo, entonces dejamos de recorrer
-                //toda la caché.
-                if (unUsuario == null) {
-                    break;
-                }
-
                 usuarios.add(unUsuario);
-            } catch (CacheException ex) {
-                System.out.println("Error con la caché");
+            } catch (ExcepcionObjetoDesconocido ex) {
+                System.out.println("Error:");
                 ex.printStackTrace();
             }
 
         }
-        /*Nótese que este ArrayList, fue llenado 
-         con la información de la caché.*/
         return usuarios;
     }
 
