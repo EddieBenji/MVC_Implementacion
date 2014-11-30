@@ -14,22 +14,9 @@ import java.sql.SQLException;
  * @author Lalo
  */
 public class DAOCandidato extends DAOBD{
-    
-    
 
     @Override
-    public void establishConnection(String host, String port, String user, String password, String nameBD) {
-        super.establishConnection(host, port, user, password, nameBD); 
-    }
-
-    @Override
-    public int getIdElemento(Object elemento) {
-       
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public String obtenerClaveElemento(Object elemento) {
+    public String obtenerCondicionElemento(Object elemento) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -44,8 +31,12 @@ public class DAOCandidato extends DAOBD{
     }
 
     @Override
-    public Object findElement(String condicion) throws SQLException {
+    public Object findElement(String nombreTabla, String condicion) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    
+
+    
     
 }
