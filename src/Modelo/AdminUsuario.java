@@ -13,7 +13,6 @@ import Clases.Shiro;
 import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
 import java.awt.Window;
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -148,28 +147,14 @@ public class AdminUsuario extends ClaseModelo {
         cerrarVentanas();
     }
 
-    private ArrayList<Usuario> obtenerUsuarios() {
-        //declaramos el ArrayList que contendrá la información de los candidatos:
-        ArrayList<Usuario> usuarios = new ArrayList<>();
-
-        //recorremos toda la caché:
-        for (int i = 501; i <= contadorUsuario; i++) {
-
-            try {
-                Usuario unUsuario = (Usuario) cache.get(i);
-                usuarios.add(unUsuario);
-            } catch (ExcepcionObjetoDesconocido ex) {
-                System.out.println("Error:");
-                ex.printStackTrace();
-            }
-
-        }
-        return usuarios;
-    }
-
     @Override
     public Object getDatos() {
-        datos = obtenerUsuarios();
+        try {
+            datos = cache.toArray(501, contadorUsuario);
+        } catch (ExcepcionObjetoDesconocido ex) {
+            System.out.println("Error en el llenado de usuarios");
+            ex.printStackTrace();
+        }
         return datos;
 
     }

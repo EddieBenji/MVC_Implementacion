@@ -164,7 +164,12 @@ public class AdminCandidato extends ClaseModelo {
 
     @Override
     public Object getDatos() {
-        datos = obtenerCandidatos();
+        try {
+            datos = cache.toArray(1, contadorCandidatos);
+        } catch (ExcepcionObjetoDesconocido ex) {
+            System.out.println("Error en el llenado");
+            ex.printStackTrace();
+        }
         return datos;
     }
 
