@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `mvcdb`.`usuario` (
   `nombre` VARCHAR(80) NOT NULL,
   `password` VARCHAR(20) NOT NULL,
   `rol` VARCHAR(20) NOT NULL,
+  `permiso` VARCHAR(90) NOT NULL,
   PRIMARY KEY (`usuario_id`))
 ENGINE = InnoDB;
 
