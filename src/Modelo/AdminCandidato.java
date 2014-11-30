@@ -15,6 +15,8 @@ import Fmat.Framework.Modelo.ClaseModelo;
 import java.awt.Window;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -100,13 +102,19 @@ public class AdminCandidato extends ClaseModelo {
 
             cache.put(unCandidato);
             //TAMBIÉN DEBERÁ ACTUALIZAR LA BD!!!
+            //TODO revisar****
+            String condicion = daoCandidato.obtenerCondicionElemento(unCandidato);
+            daoCandidato.updateElement(unCandidato, condicion);
+            //***************
 
             notificarObservadoresEvento(0);
-        } catch (ExcepcionObjetoDesconocido | ExcepcionObjetoDuplicado ex) {
+        } catch (ExcepcionObjetoDesconocido | ExcepcionObjetoDuplicado | SQLException ex) {
             System.out.println("Error:");
             ex.printStackTrace();
-        }
+       }
     }
+    
+        
 
     /**
      * Elimina un candidato, de la lista de candidatos.
@@ -117,15 +125,23 @@ public class AdminCandidato extends ClaseModelo {
         try {
             //lo eliminamos de la caché:
             cache.delete(id);
+            
+            Candidato candidatoAEliminar= (Candidato)daoCandidato.
+                    findElement("mvcdb.candidato", "usuario_id = " + id);
+            daoCandidato.deleteElement(candidatoAEliminar);
+            
             if (id != contadorCandidatos) {//entonces no eliminará el último.
                 //Obtenemos el último de la caché:
                 Candidato unCandidato = (Candidato) cache.get(contadorCandidatos);
+                String condicion = daoCandidato.obtenerCondicionElemento(unCandidato);
 
                 //a ese último, le seteamos el id del que acabamos de eliminar:
                 unCandidato.setIdCandidato(id);
 
                 //metemos el último con el id del que eliminamos.
                 cache.put(unCandidato);
+                daoCandidato.updateElement(unCandidato, condicion);
+                
 
                 //boramos el último, para no tener duplicados
                 cache.delete(contadorCandidatos);
@@ -137,7 +153,7 @@ public class AdminCandidato extends ClaseModelo {
 
             //notificamos del cambio.
             notificarObservadoresEvento(0);
-        } catch (ExcepcionObjetoDesconocido | ExcepcionObjetoDuplicado ex) {
+        } catch (ExcepcionObjetoDesconocido | ExcepcionObjetoDuplicado | SQLException ex) {
             System.out.println("Error:");
             ex.printStackTrace();
         }
