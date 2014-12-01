@@ -6,7 +6,7 @@
 package Controlador.DAOS;
 
 import DAO.DAOBD;
-import Prueba.Candidato;
+import Modelo.Candidato;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,7 +17,13 @@ import java.sql.Statement;
  */
 public class DAOCandidato extends DAOBD{
 
-     @Override
+    /**
+     *Lo único que hace es devolver una cadena de la siguiente forma:
+     * candidato_id = "idCandidato".
+     * @param elemento es el objeto del que se tomará la condición.
+     * @return
+     */
+    @Override
     public String obtenerCondicionElemento(Object elemento) {
 
         int idCandidato = ((Candidato) elemento).getID();

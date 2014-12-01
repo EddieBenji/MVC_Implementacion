@@ -10,9 +10,13 @@ import Clases.ExcepcionArchivoConfiguracion;
 import Clases.ExcepcionObjetoDesconocido;
 import Clases.ExcepcionObjetoDuplicado;
 import Clases.Shiro;
+import Controlador.DAOS.DAOUsuario;
 import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
 import java.awt.Window;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -24,13 +28,20 @@ import org.apache.shiro.authc.UnknownAccountException;
 public class AdminUsuario extends ClaseModelo {
 
     private static AdminUsuario adminUsuario;
+    
     private final ControladorCache cache;
     private final Shiro shiro;
+    
+    private DAOUsuario daoUsuario ;
+    
     private static int contadorUsuario = 501;
 
     private AdminUsuario() {
         cache = ControladorCache.getInstanciaCache();
         shiro = new Shiro();
+        
+        daoUsuario = new DAOUsuario();
+        
         try {
             cache.configLoad();
             inicializarEventos();
@@ -83,9 +94,10 @@ public class AdminUsuario extends ClaseModelo {
             shiro.agregarCuenta(usuario, clave, rol);
             Usuario nuevoUsuario = new Usuario(contadorUsuario, usuario, clave, rol,permisos);
             cache.put(nuevoUsuario);
-            contadorUsuario++;
-            //FALTA A LA BD.
-        } catch (ExcepcionObjetoDuplicado ex) {
+            daoUsuario.addElement(nuevoUsuario);
+            
+            contadorUsuario++;    
+        } catch (ExcepcionObjetoDuplicado | SQLException ex) {
             System.out.println("Error:");
             ex.printStackTrace();
         }
@@ -105,9 +117,10 @@ public class AdminUsuario extends ClaseModelo {
             //la caché necesita un objeto!
             Usuario nuevoUsuario = new Usuario(contadorUsuario, usuario, clave, "Votante","Votar");
             cache.put(nuevoUsuario);
+            daoUsuario.addElement(nuevoUsuario);
             contadorUsuario++;
-            //FALTA A LA BD.
-        } catch (ExcepcionObjetoDuplicado ex) {
+            
+        } catch (ExcepcionObjetoDuplicado | SQLException ex) {
             System.out.println("Error:");
             ex.printStackTrace();
         }

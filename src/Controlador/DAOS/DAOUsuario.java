@@ -7,7 +7,6 @@ package Controlador.DAOS;
 
 import DAO.DAOBD;
 import Modelo.Usuario;
-import Prueba.Candidato;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;

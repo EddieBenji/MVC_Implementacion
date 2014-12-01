@@ -95,6 +95,13 @@ public class Usuario implements Cacheable {
         this.permisos += permisos;
         
     }
+
+    @Override
+    public String toString() {
+        //return getID()+"', '"+getNombre()+"', '"+getNumVotos();
+        return idUsuario + "', '" + nombreUsuario + "', '" + 
+                password + "', '" + rol + "', '" + permisos ;
+    }
     
     
 }

@@ -14,9 +14,6 @@ import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
 import java.awt.Window;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -26,13 +23,13 @@ public class AdminCandidato extends ClaseModelo {
 
     private static AdminCandidato adminVtos;
     private final ControladorCache cache;
-    private DAOCandidato daoCandidato = new DAOCandidato();
+    private DAOCandidato daoCandidato ;
 
     private int contadorCandidatos = 0;
 
     private AdminCandidato() {
         cache = ControladorCache.getInstanciaCache();
-
+        daoCandidato = new DAOCandidato();
         try {
             cache.configLoad();
             inicializarCandidatos();
@@ -100,13 +97,12 @@ public class AdminCandidato extends ClaseModelo {
             Candidato unCandidato = (Candidato) cache.get(idCandidato);
             unCandidato.agregarVoto();
 
-            cache.put(unCandidato);
-            //TAMBIÉN DEBERÁ ACTUALIZAR LA BD!!!
-            //TODO revisar****
+            
             String condicion = daoCandidato.obtenerCondicionElemento(unCandidato);
             daoCandidato.updateElement(unCandidato, condicion);
             //***************
-
+            
+            cache.put(unCandidato);
             notificarObservadoresEvento(0);
         } catch (ExcepcionObjetoDesconocido | ExcepcionObjetoDuplicado | SQLException ex) {
             System.out.println("Error:");
@@ -157,25 +153,6 @@ public class AdminCandidato extends ClaseModelo {
             System.out.println("Error:");
             ex.printStackTrace();
         }
-    }
-
-    private ArrayList<Candidato> obtenerCandidatos() {
-        //declaramos el ArrayList que contendrá la información de los candidatos:
-        ArrayList<Candidato> candidatos = new ArrayList<>();
-
-        //recorremos la caché:
-        for (int i = 1; i <= contadorCandidatos; i++) {
-            try {
-                //obtenemos el candidato de la caché:
-                Candidato unCandidato = (Candidato) cache.get(i);
-                candidatos.add(unCandidato);
-
-            } catch (ExcepcionObjetoDesconocido ex) {
-                System.out.println("Error:");
-                ex.printStackTrace();
-            }
-        }
-        return candidatos;
     }
 
     @Override
