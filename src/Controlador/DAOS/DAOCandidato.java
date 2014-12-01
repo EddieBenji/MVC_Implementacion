@@ -69,8 +69,8 @@ public class DAOCandidato extends DAOBD {
         busquedaCliente.next();
 
         Candidato unCandidato = new Candidato( busquedaCliente.getInt( "candidato_id" ),
-                busquedaCliente.getString("nombre"),
-                busquedaCliente.getInt("num_votos"));
+                busquedaCliente.getString( "nombre" ),
+                busquedaCliente.getInt( "num_votos" ) );
 
         return unCandidato;
     }
