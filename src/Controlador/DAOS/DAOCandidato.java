@@ -65,6 +65,7 @@ public class DAOCandidato extends DAOBD {
     @Override
     public Object findElement( String nombreTabla, String condicion ) throws SQLException {
         this.establishConnection();
+        String query = "SELECT * FROM " + nombreTabla + " WHERE " + condicion;
 
         Statement sentencia = this.getConnection().createStatement();
         ResultSet busquedaCliente = sentencia.executeQuery(query);
