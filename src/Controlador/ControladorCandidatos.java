@@ -6,18 +6,16 @@ import Modelo.AdminCandidato;
 
 /**
  *
- * @author Lalo
+ * @author Eduardo Canché
  */
 public class ControladorCandidatos extends ClaseControlador {
 
-    public ControladorCandidatos(ClaseModelo modelo, int idEvento) {
-
-        super(modelo, idEvento);
-
+    public ControladorCandidatos( ClaseModelo modelo, int idEvento ) {
+        super( modelo, idEvento );
     }
 
-    public void agregarCandidato(int id, String candidato) {
-        (AdminCandidato.getInstance()).agregarCandidatos(id, candidato);
+    public void agregarCandidato( int id, String candidato ) {
+        (AdminCandidato.getInstance()).agregarCandidatos( id, candidato );
     }
 /*
     public void eliminarCandidato(int id) {
@@ -25,8 +23,6 @@ public class ControladorCandidatos extends ClaseControlador {
     }
 */
     @Override
-    public void actualizar(Object obj) {
-        //Si queremos, se puede implementar, sino, pues no. (:
-    }
+    public void actualizar( Object obj ) {}
 
 }
