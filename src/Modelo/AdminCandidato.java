@@ -201,6 +201,7 @@ public class AdminCandidato extends ClaseModelo {
     public Object getDatos() {
         datos = daoCandidato.getAllFromTable("candidato");
         return datos;
+        
     }
 
     public void cerrarVentanas() {

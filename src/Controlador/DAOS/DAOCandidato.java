@@ -61,6 +61,8 @@ public class DAOCandidato extends DAOBD{
                         + ",`num_votos` = '" + elementoAmodificar.getNumVotos() + "'"
                         + " WHERE " + condicion);
 
+        sentencia.close();
+        sentencia = null;
         this.closeConnection(getConnection());
         return (actualizaCandidato != 0);
     }
@@ -70,13 +72,15 @@ public class DAOCandidato extends DAOBD{
         this.establishConnection();
         String query = "SELECT * FROM " + nombreTabla + " WHERE " + condicion;
 
-        Statement sentenciaBuscaliente = this.getConnection().createStatement();
-        ResultSet busquedaCliente = sentenciaBuscaliente.executeQuery(query);
+        Statement sentencia = this.getConnection().createStatement();
+        ResultSet busquedaCliente = sentencia.executeQuery(query);
         busquedaCliente.next();
 
         Candidato unCandidato = new Candidato(busquedaCliente.getInt("candidato_id"),
                 busquedaCliente.getString("nombre"),
                 busquedaCliente.getInt("num_votos"));
+        sentencia.close();
+        sentencia = null;
         this.closeConnection(getConnection());
         return unCandidato;
     } 
