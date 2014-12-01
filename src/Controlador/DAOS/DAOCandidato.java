@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controlador.DAOS;
 
 import DAO.DAOBD;
@@ -13,9 +8,9 @@ import java.sql.Statement;
 
 /**
  *
- * @author Lalo
+ * @author Eduardo Canché
  */
-public class DAOCandidato extends DAOBD{
+public class DAOCandidato extends DAOBD {
 
     /**
      *Lo único que hace es devolver una cadena de la siguiente forma:
@@ -24,32 +19,32 @@ public class DAOCandidato extends DAOBD{
      * @return
      */
     @Override
-    public String obtenerCondicionElemento(Object elemento) {
+    public String obtenerCondicionElemento( Object elemento ) {
 
-        int idCandidato = ((Candidato) elemento).getID();
+        int idCandidato = ( (Candidato) elemento ).getID();
         String condicion = "candidato_id = " + idCandidato;
 
         return condicion;
     }
 
     @Override
-    public Object obtenerElementoDeTabla(ResultSet resultadoDeConsulta) {
+    public Object obtenerElementoDeTabla( ResultSet resultadoDeConsulta ) {
         try {
-            return new Candidato(resultadoDeConsulta.getInt("candidato_id"),
-                    resultadoDeConsulta.getString("nombre"), resultadoDeConsulta.getInt("num_votos"));
-        } catch (SQLException ex) {
-            System.out.println("ERROR EN LA LEÍDA DE LA BD.");
+            return new Candidato( resultadoDeConsulta.getInt( "candidato_id" ),
+                    resultadoDeConsulta.getString( "nombre" ), resultadoDeConsulta.getInt( "num_votos" ) );
+        } catch ( SQLException ex ) {
+            System.out.println( "ERROR EN LA LEÍDA DE LA BD." );
             ex.printStackTrace();
         }
         return null;
     }
 
     @Override
-    public boolean updateElement(Object elemento, String condicion) throws SQLException {
+    public boolean updateElement( Object elemento, String condicion ) throws SQLException {
 
         this.establishConnection();
 
-        Candidato elementoAmodificar = (Candidato) elemento;
+        Candidato elementoAmodificar = ( Candidato ) elemento;
 
         Statement sentencia = this.getConnection().createStatement();
 
@@ -60,23 +55,24 @@ public class DAOCandidato extends DAOBD{
                         + ",`num_votos` = '" + elementoAmodificar.getNumVotos() + "'"
                         + " WHERE " + condicion);
 
-        return (actualizaCandidato != 0);
+        return ( actualizaCandidato != 0 );
     }
 
     @Override
-    public Object findElement(String nombreTabla, String condicion) throws SQLException {
+    public Object findElement( String nombreTabla, String condicion ) throws SQLException {
         this.establishConnection();
-        String query = "SELECT * FROM " + nombreTabla + " WHERE " + condicion;
 
+        String query                   = "SELECT * FROM " + nombreTabla + " WHERE " + condicion;
         Statement sentenciaBuscaliente = this.getConnection().createStatement();
-        ResultSet busquedaCliente = sentenciaBuscaliente.executeQuery(query);
+        ResultSet busquedaCliente      = sentenciaBuscaliente.executeQuery( query );
+
         busquedaCliente.next();
 
-        Candidato unCandidato = new Candidato(busquedaCliente.getInt("candidato_id"),
+        Candidato unCandidato = new Candidato( busquedaCliente.getInt( "candidato_id" ),
                 busquedaCliente.getString("nombre"),
                 busquedaCliente.getInt("num_votos"));
 
         return unCandidato;
-    } 
-    
+    }
+
 }
