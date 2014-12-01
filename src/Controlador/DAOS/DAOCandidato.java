@@ -54,12 +54,14 @@ public class DAOCandidato extends DAOBD{
         Statement sentencia = this.getConnection().createStatement();
 
         int actualizaCandidato = sentencia.
-                executeUpdate("UPDATE mvcdb.candidato SET "
+                executeUpdate("UPDATE "+elemento.getClass().getSimpleName().toLowerCase()
+                        +" SET "
                         + "`candidato_id` = '" + elementoAmodificar.getID() + "'"
                         + ",`nombre` = '" + elementoAmodificar.getNombre() + "'"
                         + ",`num_votos` = '" + elementoAmodificar.getNumVotos() + "'"
                         + " WHERE " + condicion);
 
+        this.closeConnection(getConnection());
         return (actualizaCandidato != 0);
     }
 
@@ -75,7 +77,7 @@ public class DAOCandidato extends DAOBD{
         Candidato unCandidato = new Candidato(busquedaCliente.getInt("candidato_id"),
                 busquedaCliente.getString("nombre"),
                 busquedaCliente.getInt("num_votos"));
-
+        this.closeConnection(getConnection());
         return unCandidato;
     } 
     

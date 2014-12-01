@@ -19,6 +19,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     /**
      * Creates new form introVotos
+     *
      * @param controladorDeVotos
      * @param controladorSesion
      */
@@ -26,11 +27,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         this.controlSesion = controladorSesion;
         this.controlVotos = controladorDeVotos;
         this.controlCandidatos = new ControladorCandidatos(controladorDeVotos.getModelo(), 1);
-        
-        
+
         initComponents();
     }
-    
+
     public static VentanaPrincipal getInstance(ControladorVotos controladorDeVotos, ControladorSesion controladorSesion) {
         if (vtnPrin == null) {
             vtnPrin = new VentanaPrincipal(controladorDeVotos, controladorSesion);
@@ -41,10 +41,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     public void iniciarDatosEnVentana(ArrayList<Candidato> candidatos) {
         DefaultComboBoxModel modeloCombo = new DefaultComboBoxModel();
         for (Candidato cand : candidatos) {
-            modeloCombo.addElement(cand.getID()+" "+cand.getNombre());
+            modeloCombo.addElement(cand.getID() + " " + cand.getNombre());
         }
         comboCandidatosVotar.setModel(modeloCombo);
-        comboCandidatosEliminar.setModel(modeloCombo);
+        //comboCandidatosEliminar.setModel(modeloCombo);
     }
 
     /**
@@ -90,6 +90,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jLabel2.setText("Para eliminar un candidato, introduzca su nombre: ");
 
         btnEliminar.setText("Eliminar Candidato");
+        btnEliminar.setEnabled(false);
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarActionPerformed(evt);
@@ -106,6 +107,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
 
         comboCandidatosEliminar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboCandidatosEliminar.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -171,35 +173,35 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVotarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVotarActionPerformed
-        
+
         String palabras = (String) comboCandidatosVotar.getSelectedItem();
         String strID = palabras.split(" ")[0];
         int id = Integer.parseInt(strID);
-        
+
         controlVotos.realizarVotacion(id);
     }//GEN-LAST:event_btnVotarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        
-        int nuevoID = comboCandidatosVotar.getItemCount()+1;
-        controlCandidatos.agregarCandidato(nuevoID,txtNombre.getText());
+
+        int nuevoID = comboCandidatosVotar.getItemCount() + 1;
+        controlCandidatos.agregarCandidato(nuevoID, txtNombre.getText());
         txtNombre.setText("");
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         //adminCan.eliminarCandidato(txtElim.getText());
-       String palabras = (String) comboCandidatosEliminar.getSelectedItem();
+        String palabras = (String) comboCandidatosEliminar.getSelectedItem();
         String strID = palabras.split(" ")[0];
         int id = Integer.parseInt(strID);
-        controlCandidatos.eliminarCandidato(id);
-        
+        //controlCandidatos.eliminarCandidato(id);
+
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         // TODO add your handling code here:
         controlSesion.cerrarSesion();
         this.dispose();
-        new InicioSesion().setVisible(true);  
+        new InicioSesion().setVisible(true);
     }//GEN-LAST:event_btnSalirActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

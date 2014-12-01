@@ -99,8 +99,8 @@ public class Usuario implements Cacheable {
     @Override
     public String toString() {
         //return getID()+"', '"+getNombre()+"', '"+getNumVotos();
-        return idUsuario + "', '" + nombreUsuario + "', '" + 
-                password + "', '" + rol + "', '" + permisos ;
+        return idUsuario + ", '" + nombreUsuario + "', '" + 
+                password + "', '" + rol + "', '" + permisos +"'";
     }
     
     

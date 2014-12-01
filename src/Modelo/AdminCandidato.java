@@ -14,6 +14,9 @@ import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
 import java.awt.Window;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.jcs.access.exception.CacheException;
 
 /**
  *
@@ -23,9 +26,9 @@ public class AdminCandidato extends ClaseModelo {
 
     private static AdminCandidato adminVtos;
     private final ControladorCache cache;
-    private DAOCandidato daoCandidato ;
+    private DAOCandidato daoCandidato;
 
-    private int contadorCandidatos = 0;
+    //private int contadorCandidatos = 0;
 
     private AdminCandidato() {
         cache = ControladorCache.getInstanciaCache();
@@ -57,9 +60,31 @@ public class AdminCandidato extends ClaseModelo {
      * Inicializa en memoria 3 candidatos por default.
      */
     private void inicializarCandidatos() {
-        agregarCandidatos(1, "Pepe");
-        agregarCandidatos(2, "Esteban");
-        agregarCandidatos(3, "Jorge");
+        /*
+         agregarCandidatos(1, "Pepe");
+         agregarCandidatos(2, "Esteban");
+         agregarCandidatos(3, "Jorge");
+         */
+        llenarCache();
+    }
+
+    public void llenarCache() {
+        try {
+            //contadorCandidatos = 0;
+            cache.limpiarCache();
+
+            for (Object unCandidato : daoCandidato.getAllFromTable("candidato")) {
+                try {
+                    cache.put((Candidato) unCandidato);
+              //      contadorCandidatos++;
+                } catch (ExcepcionObjetoDuplicado ex) {
+                    Logger.getLogger(AdminCandidato.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+        } catch (CacheException ex) {
+            Logger.getLogger(AdminCandidato.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void inicializarEventos() {
@@ -77,16 +102,15 @@ public class AdminCandidato extends ClaseModelo {
     public void agregarCandidatos(int id, String nombre) {
         try {
 
-            contadorCandidatos++;
+            //contadorCandidatos++;
             Candidato nuevoCandidato = new Candidato(id, nombre, 0);
-            //lo mete a la caché:
-            cache.put(nuevoCandidato);
             //lo mete a la BD:
             daoCandidato.addElement(nuevoCandidato);
-
+            //lo mete a la caché.
+            cache.put(nuevoCandidato);
             notificarObservadoresEvento(0);
 
-        } catch (ExcepcionObjetoDuplicado | SQLException ex) {
+        } catch (SQLException | ExcepcionObjetoDuplicado ex) {
             System.out.println("Error: " + ex.getLocalizedMessage());
             ex.printStackTrace();
         }
@@ -97,35 +121,54 @@ public class AdminCandidato extends ClaseModelo {
             Candidato unCandidato = (Candidato) cache.get(idCandidato);
             unCandidato.agregarVoto();
 
+            actualizarCache(unCandidato);
+
+            actualizarBD(unCandidato);
             
-            String condicion = daoCandidato.obtenerCondicionElemento(unCandidato);
-            daoCandidato.updateElement(unCandidato, condicion);
-            //***************
-            
-            cache.put(unCandidato);
             notificarObservadoresEvento(0);
-        } catch (ExcepcionObjetoDesconocido | ExcepcionObjetoDuplicado | SQLException ex) {
-            System.out.println("Error:");
-            ex.printStackTrace();
-       }
+        } catch (ExcepcionObjetoDesconocido | ExcepcionObjetoDuplicado ex) {
+            try {
+                Candidato unCandidato = (Candidato) daoCandidato.
+                        findElement("candidato", "candidato_id = " + idCandidato);
+                unCandidato.agregarVoto();
+
+                actualizarBD(unCandidato);
+                cache.put(unCandidato);
+                
+            } catch (SQLException | ExcepcionObjetoDuplicado ex1) {
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AdminCandidato.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    
-        
+
+    private void actualizarCache(Candidato unCandidato) throws ExcepcionObjetoDesconocido, ExcepcionObjetoDuplicado {
+        cache.delete(unCandidato.getID());
+        cache.put(unCandidato);
+    }
+
+    private void actualizarBD(Candidato unCandidato) throws SQLException {
+
+        String condicion = daoCandidato.obtenerCondicionElemento(unCandidato);
+        daoCandidato.updateElement(unCandidato, condicion);
+    }
 
     /**
      * Elimina un candidato, de la lista de candidatos.
      *
      * @param id
      */
+    /*
     public void eliminarCandidatos(int id) {
         try {
             //lo eliminamos de la caché:
             cache.delete(id);
-            
-            Candidato candidatoAEliminar= (Candidato)daoCandidato.
-                    findElement("mvcdb.candidato", "usuario_id = " + id);
+
+            Candidato candidatoAEliminar = (Candidato) daoCandidato.
+                    findElement("candidato", "usuario_id = " + id);
             daoCandidato.deleteElement(candidatoAEliminar);
-            
+
             if (id != contadorCandidatos) {//entonces no eliminará el último.
                 //Obtenemos el último de la caché:
                 Candidato unCandidato = (Candidato) cache.get(contadorCandidatos);
@@ -137,7 +180,6 @@ public class AdminCandidato extends ClaseModelo {
                 //metemos el último con el id del que eliminamos.
                 cache.put(unCandidato);
                 daoCandidato.updateElement(unCandidato, condicion);
-                
 
                 //boramos el último, para no tener duplicados
                 cache.delete(contadorCandidatos);
@@ -154,15 +196,10 @@ public class AdminCandidato extends ClaseModelo {
             ex.printStackTrace();
         }
     }
-
+*/
     @Override
     public Object getDatos() {
-        try {
-            datos = cache.toArray(1, contadorCandidatos);
-        } catch (ExcepcionObjetoDesconocido ex) {
-            System.out.println("Error en el llenado");
-            ex.printStackTrace();
-        }
+        datos = daoCandidato.getAllFromTable("candidato");
         return datos;
     }
 

@@ -15,8 +15,8 @@ import java.sql.Statement;
  *
  * @author Lalo
  */
-public class DAOUsuario extends DAOBD{
-     
+public class DAOUsuario extends DAOBD {
+
     @Override
     public String obtenerCondicionElemento(Object elemento) {
 
@@ -31,7 +31,7 @@ public class DAOUsuario extends DAOBD{
         try {
             return new Usuario(resultadoDeConsulta.getInt("usuario_id"),
                     resultadoDeConsulta.getString("nombre"), resultadoDeConsulta.getString("password"),
-            resultadoDeConsulta.getString("rol"), resultadoDeConsulta.getString("permiso"));
+                    resultadoDeConsulta.getString("rol"), resultadoDeConsulta.getString("permiso"));
         } catch (SQLException ex) {
             System.out.println("ERROR EN LA LEÍDA DE LA BD.");
             ex.printStackTrace();
@@ -56,7 +56,7 @@ public class DAOUsuario extends DAOBD{
                         + ",`rol` = '" + elementoAmodificar.getRol() + "'"
                         + ",`permiso` = '" + elementoAmodificar.getPermisos() + "'"
                         + " WHERE " + condicion);
-
+        this.closeConnection(getConnection());
         return (actualizaUsuario != 0);
     }
 
@@ -74,7 +74,7 @@ public class DAOUsuario extends DAOBD{
                 busquedaCliente.getString("password"),
                 busquedaCliente.getString("rol"),
                 busquedaCliente.getString("permiso"));
-
+        this.closeConnection(getConnection());
         return unUsuario;
     }
 }
