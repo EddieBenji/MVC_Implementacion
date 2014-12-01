@@ -9,38 +9,38 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Lalo
+ * @author Eduardo Canché
  */
 public class ControladorVotos extends ClaseControlador {
-    
-    ControladorSesion controlSesion = new ControladorSesion(((AdminCandidato) super.getModelo()), 0);
+
+    ControladorSesion controlSesion = new ControladorSesion( ( ( AdminCandidato ) super.getModelo() ), 0 );
     VentanaPrincipal ventanaPrincipal;
 
-    public ControladorVotos(ClaseModelo modelo, int idEvento) {
-        super(modelo, idEvento);
-        ventanaPrincipal = VentanaPrincipal.getInstance(this, controlSesion);
+    public ControladorVotos( ClaseModelo modelo, int idEvento ) {
+        super( modelo, idEvento );
+        ventanaPrincipal = VentanaPrincipal.getInstance( this, controlSesion );
     }
 
-    public void realizarVotacion(int idCandidato) {
-        (AdminCandidato.getInstance()).agregarVoto(idCandidato);
+    public void realizarVotacion( int idCandidato ) {
+        ( AdminCandidato.getInstance() ).agregarVoto( idCandidato );
     }
 
     @Override
-    public void actualizar(Object obj) {
+    public void actualizar( Object obj ) {
         actualizarVentana();
     }
 
     public void actualizarVentana() {
-        ventanaPrincipal.iniciarDatosEnVentana((ArrayList<Candidato>) modelo.getDatos());
-        ventanaPrincipal.setVisible(true);
-        
+        ventanaPrincipal.iniciarDatosEnVentana( (ArrayList<Candidato>) modelo.getDatos() );
+        ventanaPrincipal.setVisible( true );
+
     }
-    
-    public void permitirModificaciones(boolean permitido){
-        ventanaPrincipal.btnAgregar.setEnabled(permitido);
-        ventanaPrincipal.txtNombre.setEnabled(permitido);
-        ventanaPrincipal.btnEliminar.setEnabled(permitido);
-        ventanaPrincipal.comboCandidatosEliminar.setEnabled(permitido);
+
+    public void permitirModificaciones( boolean permitido ){
+        ventanaPrincipal.btnAgregar.setEnabled( permitido );
+        ventanaPrincipal.txtNombre.setEnabled( permitido );
+        ventanaPrincipal.btnEliminar.setEnabled( permitido );
+        ventanaPrincipal.comboCandidatosEliminar.setEnabled( permitido );
     }
-    
+
 }
