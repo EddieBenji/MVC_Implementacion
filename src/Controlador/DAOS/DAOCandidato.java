@@ -58,7 +58,7 @@ public class DAOCandidato extends DAOBD {
 
         sentencia.close();
         sentencia = null;
-        this.closeConnection(getConnection());
+        this.closeConnection();
         return (actualizaCandidato != 0);
     }
 
@@ -76,7 +76,7 @@ public class DAOCandidato extends DAOBD {
                 busquedaCliente.getInt("num_votos"));
         sentencia.close();
         sentencia = null;
-        this.closeConnection(getConnection());
+        this.closeConnection();
         return unCandidato;
     }
 
