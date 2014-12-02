@@ -70,20 +70,19 @@ public class AdminCandidato extends ClaseModelo {
 
     public void llenarCache() {
         try {
-            //contadorCandidatos = 0;
+            //lo va a llenar de lo que hay en la BD.
             cache.limpiarCache();
 
             for (Object unCandidato : daoCandidato.getAllFromTable("candidato")) {
                 try {
                     cache.put((Candidato) unCandidato);
-              //      contadorCandidatos++;
                 } catch (ExcepcionObjetoDuplicado ex) {
-                    Logger.getLogger(AdminCandidato.class.getName()).log(Level.SEVERE, null, ex);
+                    ex.printStackTrace();
                 }
 
             }
         } catch (CacheException ex) {
-            Logger.getLogger(AdminCandidato.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 

@@ -1,2 +1,2 @@
 2
-mvcdb 192.168.229.236 3306 root ""
+mvcdb localhost 3306 root ""
