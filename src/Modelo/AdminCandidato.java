@@ -57,7 +57,7 @@ public class AdminCandidato extends ClaseModelo {
     }
 
     /**
-     * Inicializa en memoria 3 candidatos por default.
+     * Inicializa en memoria los candidatos de la BD.
      */
     private void inicializarCandidatos() {
 
@@ -177,19 +177,21 @@ public class AdminCandidato extends ClaseModelo {
 
     @Override
     public Object getDatos() {
-
+        //datos = daoCandidato.getAllFromTable("candidato");
+        
         try {
             //es más rápido que vaya a la caché:
             //si solo es para mostrar datos.
-            if (!cache.toArray(1, contadorCandidatos).isEmpty()) {
-                //entonces la caché está actualizada:
-                datos = cache.toArray(1, contadorCandidatos);    
-            } else {
+            if (cache.toArray(1, contadorCandidatos).isEmpty()) {
                 //entonces la caché no tiene la información
                 //se la pedimos a la bd.
                 datos = daoCandidato.getAllFromTable("candidato");
+            } else {
+                //entonces la caché está actualizada:
+                datos = cache.toArray(1, contadorCandidatos);
             }
         } catch (ExcepcionObjetoDesconocido  ex) {
+            datos = daoCandidato.getAllFromTable("candidato");
             ex.printStackTrace();
         }
         return datos;
