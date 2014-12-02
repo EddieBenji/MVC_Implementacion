@@ -36,6 +36,12 @@ public class ControladorVotos extends ClaseControlador {
 
     }
 
+    /**
+     * Habilita el botón de agregar o eliminar candidatos, dependiendo del rol
+     * que tenga.
+     *
+     * @param permitido
+     */
     public void permitirModificaciones(boolean permitido) {
         ventanaPrincipal.btnAgregar.setEnabled(permitido);
         ventanaPrincipal.txtNombre.setEnabled(permitido);
