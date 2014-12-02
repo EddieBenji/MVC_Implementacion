@@ -28,9 +28,7 @@ public class Numeros extends ClaseVista {
 
     @Override
     public void actualizar(Object o) {
-        //super.actualizar(o);
         this.candidatos = (ArrayList<Candidato>) o;
-
         mostrarInformacion();
     }
 
