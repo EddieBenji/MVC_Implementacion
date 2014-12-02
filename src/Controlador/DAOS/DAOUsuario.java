@@ -56,7 +56,7 @@ public class DAOUsuario extends DAOBD {
                         + ",`rol` = '" + elementoAmodificar.getRol() + "'"
                         + ",`permiso` = '" + elementoAmodificar.getPermisos() + "'"
                         + " WHERE " + condicion);
-        this.closeConnection(getConnection());
+        this.closeConnection();
         return (actualizaUsuario != 0);
     }
 
@@ -74,7 +74,7 @@ public class DAOUsuario extends DAOBD {
                 busquedaCliente.getString("password"),
                 busquedaCliente.getString("rol"),
                 busquedaCliente.getString("permiso"));
-        this.closeConnection(getConnection());
+        this.closeConnection();
         return unUsuario;
     }
 }
