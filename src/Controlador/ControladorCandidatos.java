@@ -17,11 +17,11 @@ public class ControladorCandidatos extends ClaseControlador {
     public void agregarCandidato( int id, String candidato ) {
         (AdminCandidato.getInstance()).agregarCandidatos( id, candidato );
     }
-/*
+
     public void eliminarCandidato(int id) {
-        (AdminCandidato.getInstance()).eliminarCandidatos(id);
+        (AdminCandidato.getInstance()).eliminarCandidato(id);
     }
-*/
+
     @Override
     public void actualizar( Object obj ) {}
 

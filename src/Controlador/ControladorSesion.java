@@ -21,7 +21,9 @@ public class ControladorSesion extends ClaseControlador {
         ( AdminUsuario.getInstancia() ).cerrarSesion();
     }
     public void agregarCuenta( String usuario, String clave ){
-        ( AdminUsuario.getInstancia() ).registrarCuenta( usuario, clave );
+        //cualquier usuario que se agregue con la aplicación
+        //se le pone el rol de votante
+        ( AdminUsuario.getInstancia() ).registrarCuenta( usuario, clave ,"Votante","Votar");
     }
 
     @Override

@@ -15,8 +15,7 @@ import Fmat.Framework.Modelo.ClaseEvento;
 import Fmat.Framework.Modelo.ClaseModelo;
 import java.awt.Window;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import org.apache.jcs.access.exception.CacheException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -69,34 +68,29 @@ public class AdminUsuario extends ClaseModelo {
 
     private void inicializarCuentas() {
         inicializarRoles();
-        /*
-        registrarCuenta("ed","1", "Admin", "*");
-        registrarCuenta("sel","1");
-        */
         llenarCacheyShiro();
-        
-        
-        
     }
-    
-    private void llenarCacheyShiro(){
+
+    private void llenarCacheyShiro() {
         try {
             cache.limpiarCache();
-            
+            contadorUsuario = 0;
             for (Object unUsuario : daoUsuario.getAllFromTable("usuario")) {
                 try {
                     contadorUsuario++;
-                    cache.put((Usuario) unUsuario);
-                    shiro.agregarCuenta(((Usuario) unUsuario).getNombreUsuario(),
-                            ((Usuario) unUsuario).getPassword(),
-                            ((Usuario) unUsuario).getRol());
+                    cache.put(((Usuario)unUsuario));
+
+                    shiro.agregarCuenta(((Usuario)unUsuario).getNombreUsuario(),
+                            ((Usuario)unUsuario).getPassword(),
+                            ((Usuario)unUsuario).getRol());
+
                 } catch (ExcepcionObjetoDuplicado ex) {
                     System.out.println("Error");
                     ex.printStackTrace();
                 }
             }
         } catch (CacheException ex) {
-            Logger.getLogger(AdminUsuario.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 
@@ -116,36 +110,17 @@ public class AdminUsuario extends ClaseModelo {
      */
     public void registrarCuenta(String usuario, String clave, String rol, String permisos) {
         try {
+
             String claveEncriptada = shiro.encriptar(clave);
+            Usuario nuevoUsuario = new Usuario(contadorUsuario, usuario,
+                    claveEncriptada, rol, permisos);
+
+            cache.put(nuevoUsuario);
+            daoUsuario.addElement(nuevoUsuario);
             shiro.agregarCuenta(usuario, claveEncriptada, rol);
-            Usuario nuevoUsuario = new Usuario(contadorUsuario, usuario, claveEncriptada, rol, permisos);
-            cache.put(nuevoUsuario);
-            daoUsuario.addElement(nuevoUsuario);
 
             contadorUsuario++;
-        } catch (ExcepcionObjetoDuplicado | SQLException ex) {
-            System.out.println("Error:");
-            ex.printStackTrace();
-        }
-    }
 
-    /**
-     **Registra una nueva cuenta en el shiro y en la caché, con los datos
-     * especificados, pero con el rol de VOTANTE sin opción a otro Rol.
-     *
-     * @param usuario
-     * @param clave
-     */
-    public void registrarCuenta(String usuario, String clave) {
-        try {
-
-            String claveEncriptada = shiro.encriptar(clave);
-            shiro.agregarCuenta(usuario, claveEncriptada, "Votante");
-            //la caché necesita un objeto!
-            Usuario nuevoUsuario = new Usuario(contadorUsuario, usuario, claveEncriptada, "Votante", "Votar");
-            cache.put(nuevoUsuario);
-            daoUsuario.addElement(nuevoUsuario);
-            contadorUsuario++;
         } catch (ExcepcionObjetoDuplicado | SQLException ex) {
             System.out.println("Error:");
             ex.printStackTrace();
@@ -161,9 +136,12 @@ public class AdminUsuario extends ClaseModelo {
     }
 
     public boolean iniciarSesion(String usuario, String clave) {
+
         boolean pudoEntrar = false;
+
         llenarCacheyShiro();
         AdminCandidato.getInstance().llenarCache();
+
         try {
             pudoEntrar = shiro.logIn(usuario, clave);
         } catch (UnknownAccountException uae) {
@@ -178,7 +156,6 @@ public class AdminUsuario extends ClaseModelo {
 
             ice.printStackTrace();
         }
-
         return pudoEntrar;
     }
 
@@ -188,13 +165,27 @@ public class AdminUsuario extends ClaseModelo {
             shiro.logOut();
             cerrarVentanas();
         } catch (CacheException ex) {
-            Logger.getLogger(AdminUsuario.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("No pudo salir de la sesión.");
+            ex.printStackTrace();
         }
     }
 
     @Override
     public Object getDatos() {
-        datos = daoUsuario.getAllFromTable("usuario");
+        try {
+            //es más rápido que vaya a la caché:
+            //si solo es para mostrar datos.
+            if (!cache.toArray(1, contadorUsuario).isEmpty()) {
+                //entonces la caché está actualizada:
+                datos = cache.toArray(1, contadorUsuario);
+            } else {
+                //entonces la caché no tiene la información
+                //se la pedimos a la bd.
+                datos = daoUsuario.getAllFromTable("usuario");
+            }
+        } catch (ExcepcionObjetoDesconocido ex) {
+            ex.printStackTrace();
+        }
         return datos;
 
     }

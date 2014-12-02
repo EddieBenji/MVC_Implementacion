@@ -1,2 +1,2 @@
-2
+1
 mvcdb localhost 3306 root ""

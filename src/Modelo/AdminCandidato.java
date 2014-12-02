@@ -28,7 +28,7 @@ public class AdminCandidato extends ClaseModelo {
     private final ControladorCache cache;
     private DAOCandidato daoCandidato;
 
-    //private int contadorCandidatos = 0;
+    private int contadorCandidatos = 0;
 
     private AdminCandidato() {
         cache = ControladorCache.getInstanciaCache();
@@ -60,21 +60,19 @@ public class AdminCandidato extends ClaseModelo {
      * Inicializa en memoria 3 candidatos por default.
      */
     private void inicializarCandidatos() {
-        /*
-         agregarCandidatos(1, "Pepe");
-         agregarCandidatos(2, "Esteban");
-         agregarCandidatos(3, "Jorge");
-         */
+
         llenarCache();
+
     }
 
     public void llenarCache() {
         try {
             //lo va a llenar de lo que hay en la BD.
             cache.limpiarCache();
-
+            contadorCandidatos = 0;
             for (Object unCandidato : daoCandidato.getAllFromTable("candidato")) {
                 try {
+                    contadorCandidatos++;
                     cache.put((Candidato) unCandidato);
                 } catch (ExcepcionObjetoDuplicado ex) {
                     ex.printStackTrace();
@@ -101,7 +99,7 @@ public class AdminCandidato extends ClaseModelo {
     public void agregarCandidatos(int id, String nombre) {
         try {
 
-            //contadorCandidatos++;
+            contadorCandidatos++;
             Candidato nuevoCandidato = new Candidato(id, nombre, 0);
             //lo mete a la BD:
             daoCandidato.addElement(nuevoCandidato);
@@ -112,7 +110,7 @@ public class AdminCandidato extends ClaseModelo {
         } catch (SQLException | ExcepcionObjetoDuplicado ex) {
             System.out.println("Error: " + ex.getLocalizedMessage());
             ex.printStackTrace();
-        }
+        } 
     }
 
     public void agregarVoto(int idCandidato) {
@@ -121,24 +119,26 @@ public class AdminCandidato extends ClaseModelo {
             unCandidato.agregarVoto();
 
             actualizarCache(unCandidato);
-
             actualizarBD(unCandidato);
-            
+
             notificarObservadoresEvento(0);
         } catch (ExcepcionObjetoDesconocido | ExcepcionObjetoDuplicado ex) {
             try {
+                //entonces no está en la caché!
                 Candidato unCandidato = (Candidato) daoCandidato.
                         findElement("candidato", "candidato_id = " + idCandidato);
+
                 unCandidato.agregarVoto();
 
                 actualizarBD(unCandidato);
                 cache.put(unCandidato);
-                
-            } catch (SQLException | ExcepcionObjetoDuplicado ex1) {
 
+            } catch (SQLException | ExcepcionObjetoDuplicado e) {
+                e.printStackTrace();
             }
         } catch (SQLException ex) {
             Logger.getLogger(AdminCandidato.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 
@@ -158,49 +158,41 @@ public class AdminCandidato extends ClaseModelo {
      *
      * @param id
      */
-    /*
-    public void eliminarCandidatos(int id) {
+    public void eliminarCandidato(int id) {
         try {
             //lo eliminamos de la caché:
-            cache.delete(id);
-
+            //cache.delete(id);
             Candidato candidatoAEliminar = (Candidato) daoCandidato.
-                    findElement("candidato", "usuario_id = " + id);
+                    findElement("candidato", "candidato_id = " + id);
             daoCandidato.deleteElement(candidatoAEliminar);
 
-            if (id != contadorCandidatos) {//entonces no eliminará el último.
-                //Obtenemos el último de la caché:
-                Candidato unCandidato = (Candidato) cache.get(contadorCandidatos);
-                String condicion = daoCandidato.obtenerCondicionElemento(unCandidato);
-
-                //a ese último, le seteamos el id del que acabamos de eliminar:
-                unCandidato.setIdCandidato(id);
-
-                //metemos el último con el id del que eliminamos.
-                cache.put(unCandidato);
-                daoCandidato.updateElement(unCandidato, condicion);
-
-                //boramos el último, para no tener duplicados
-                cache.delete(contadorCandidatos);
-            }
-
-            //actualizamos el contador, ya que se 
-            //disminuyó en uno la cantidad de datos en la memoria.
-            contadorCandidatos--;
-
+            llenarCache();
             //notificamos del cambio.
             notificarObservadoresEvento(0);
-        } catch (ExcepcionObjetoDesconocido | ExcepcionObjetoDuplicado | SQLException ex) {
+        } catch (SQLException ex) {
             System.out.println("Error:");
             ex.printStackTrace();
         }
     }
-*/
+
     @Override
     public Object getDatos() {
-        datos = daoCandidato.getAllFromTable("candidato");
+
+        try {
+            //es más rápido que vaya a la caché:
+            //si solo es para mostrar datos.
+            if (!cache.toArray(1, contadorCandidatos).isEmpty()) {
+                //entonces la caché está actualizada:
+                datos = cache.toArray(1, contadorCandidatos);    
+            } else {
+                //entonces la caché no tiene la información
+                //se la pedimos a la bd.
+                datos = daoCandidato.getAllFromTable("candidato");
+            }
+        } catch (ExcepcionObjetoDesconocido  ex) {
+            ex.printStackTrace();
+        }
         return datos;
-        
     }
 
     public void cerrarVentanas() {

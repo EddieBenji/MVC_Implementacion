@@ -44,7 +44,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             modeloCombo.addElement(cand.getID() + " " + cand.getNombre());
         }
         comboCandidatosVotar.setModel(modeloCombo);
-        //comboCandidatosEliminar.setModel(modeloCombo);
+        comboCandidatosEliminar.setModel(modeloCombo);
     }
 
     /**
@@ -193,7 +193,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         String palabras = (String) comboCandidatosEliminar.getSelectedItem();
         String strID = palabras.split(" ")[0];
         int id = Integer.parseInt(strID);
-        //controlCandidatos.eliminarCandidato(id);
+        controlCandidatos.eliminarCandidato(id);
 
     }//GEN-LAST:event_btnEliminarActionPerformed
 
